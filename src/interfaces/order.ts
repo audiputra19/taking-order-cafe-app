@@ -5,6 +5,7 @@ export interface GetOrder {
     status: string;
     proses: string;
     created_at: string;
+    metode: string;
 }
 
 export interface OrderRequest {
@@ -20,4 +21,5 @@ export interface GetOrderByIdResponse {
     nama: string;
     harga: number;
     qty: number;
+    created_at: string;
 }

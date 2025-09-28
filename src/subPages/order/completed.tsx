@@ -1,11 +1,12 @@
+import clsx from "clsx";
 import moment from "moment";
 import { Fragment, useEffect, useState, type FC } from "react";
+import { MdClose, MdOutlineDoneOutline, MdOutlineKeyboardArrowDown, MdOutlinePaid, MdPrint } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { DetailRow } from "../../components/detailRow";
 import { useGetOrderCompleteQuery, useLazyGetOrderByIdQuery } from "../../services/apiOrder";
 import { socket, socket2 } from "../../socket";
-import { DetailRow } from "../../components/detailRow";
-import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp, MdPrint } from "react-icons/md";
-import clsx from "clsx";
-import { useNavigate } from "react-router-dom";
+import { TbCurrencyDollarOff } from "react-icons/tb";
 
 export const Completed: FC = () => {
     const { data: getOrder, refetch } = useGetOrderCompleteQuery(undefined, {
@@ -57,16 +58,52 @@ export const Completed: FC = () => {
                 <tbody>
                 {getOrder && getOrder.length > 0 ? (
                     getOrder?.map((item, i) => {
+                        let colorStatus = "border-green-500 text-green-500";
+                        let iconStatus = <MdOutlinePaid size={16}/>;
+                        switch(item.status) {
+                            case "expired":
+                                colorStatus = "border-red-500 text-red-500";
+                                iconStatus = <TbCurrencyDollarOff size={16} />;
+                                break;     
+                        }
+
+                        let colorProses = "border-green-500 text-green-500";
+                        let iconProses = <MdOutlineDoneOutline size={16}/>;
+                        switch(item.proses) {
+                            case "canceled":
+                                colorProses = "border-red-500 text-red-500";
+                                iconProses = <MdClose size={16} />;
+                                break;     
+                        }
+
                         return (
                             <Fragment key={item.order_id}>
                                 <tr>
                                     <th>{i + 1}</th>
-                                    <td className="text-center">{item.order_id}</td>
+                                    <td className="text-center">
+                                        <span className="border border-base-300 rounded-xl p-2 font-semibold">{item.order_id}</span>
+                                    </td>
                                     <td className="text-center">{moment(item.created_at).format("YYYY-MM-DD HH:mm:ss")}</td>
                                     <td className="text-center">{item.meja}</td>
-                                    <td className="text-right">{item.total.toLocaleString("id-ID")}</td>
-                                    <td className="text-center">{item.status}</td>
-                                    <td className="text-center">{item.proses}</td>
+                                    <td className="text-right">Rp. {item.total.toLocaleString("id-ID")}</td>
+                                    <td className="text-center">
+                                        <span className="flex justify-center items-center gap-2">
+                                            <div 
+                                                className={`py-1 px-4 rounded text-xs flex justify-center items-center gap-2 border ${colorStatus} font-bold`}
+                                            >
+                                                {iconStatus}<span>{item.status}</span>
+                                            </div>
+                                        </span>
+                                    </td>
+                                    <td className="text-center">
+                                        <span className="flex justify-center items-center gap-2">
+                                            <div 
+                                                className={`py-1 px-4 rounded text-xs flex justify-center items-center gap-2 border ${colorProses} font-bold`}
+                                            >
+                                                {iconProses}<span>{item.proses}</span>
+                                            </div>
+                                        </span>
+                                    </td>
                                     <td>
                                         <div 
                                             className={clsx("w-7 h-7 border-2 flex justify-center items-center rounded-full cursor-pointer",

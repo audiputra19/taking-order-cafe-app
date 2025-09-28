@@ -1,21 +1,24 @@
 import { useState, useEffect, type FC } from "react";
+import { useAppDispatch, useAppSelector } from "../store";
+import { toggleDarkMode } from "../store/darkModeSlice";
 
 export const ThemeSwitcher:FC = () => {
-    const [theme, setTheme] = useState("light");
+    const dispatch = useAppDispatch();
+    const isDark = useAppSelector(state => state.darkMode.isDark);
 
     useEffect(() => {
-        document.documentElement.setAttribute("data-theme", theme);
-    }, [theme]);
-
-    const toggleTheme = () => {
-        setTheme((prev) => (prev === "light" ? "dark" : "light"));
-    };
+        if(isDark) {
+            document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+        }
+    }, [isDark]);
 
     return (
         <label 
             className="swap swap-rotate"
         >
-            <input type="checkbox" onClick={toggleTheme} />
+            <input type="checkbox" onClick={() => dispatch(toggleDarkMode())} />
 
             {/* sun icon */}
             <svg

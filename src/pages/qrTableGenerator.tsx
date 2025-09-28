@@ -150,15 +150,31 @@ export default function QRTableGenerator(_props: Props) {
                 key={n}
                 className="p-5 flex flex-col items-center rounded bg-main-100 border border-base-300"
               >
-                <QRCodeSVG
-                  id={`qrcode-svg-${n}`}
-                  value={`http://192.168.200.21:5173/scan/${btoa(`meja-${n}`)}`}
-                  size={size}
-                  level="M"
-                  includeMargin={false}
-                  fgColor={fgColor}
-                  bgColor={bgColor}
-                />
+                {/* SCREEN version (visible on screen, hidden on print) */}
+                <div className="print:hidden">
+                  <QRCodeSVG
+                    id={`qrcode-svg-${n}`}
+                    value={`http://192.168.200.21:5173/scan/${btoa(`meja-${n}`)}`}
+                    size={size}
+                    level="M"
+                    includeMargin={false}
+                    fgColor={fgColor}
+                    bgColor={bgColor}
+                  />
+                </div>
+
+                {/* PRINT version (hidden on screen, visible when printing) */}
+                <div className="hidden print:block">
+                  <QRCodeSVG
+                    id={`qrcode-svg-print-${n}`}
+                    value={`http://192.168.200.21:5173/scan/${btoa(`meja-${n}`)}`}
+                    size={size}
+                    level="M"
+                    includeMargin={false}
+                    fgColor="#000000"
+                    bgColor="#ffffff"
+                  />
+                </div>
                 <div className="mt-3 font-medium">Meja {n}</div>
 
                 {/* Tombol download tidak ikut tercetak */}

@@ -42,7 +42,7 @@ const Sidebar: FC<SidebarProps> = ({ pathname, collapsed }) => {
         },
         {
             id: 2,
-            name: 'Order',
+            name: 'Orders',
             path: '/order',
             icon: <MdOutlineStickyNote2 size={20}/>
         },

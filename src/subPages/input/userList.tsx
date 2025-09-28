@@ -68,7 +68,7 @@ export const UserList: FC = () => {
                                                     className="cursor-pointer"
                                                     onClick={() => handleDelete(item.username)}
                                                 >
-                                                    <RiDeleteBin5Line size={20} className="text-gray-600"/>
+                                                    <RiDeleteBin5Line size={20}/>
                                                 </div>
                                             </div>
                                         </td>

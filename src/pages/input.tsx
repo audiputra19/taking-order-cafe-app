@@ -41,7 +41,7 @@ const Input: FC = () => {
                 >
                     <input type="radio" name="my_tabs_4" checked={activeTab === "input-item"} readOnly />
                     <LuNotebookPen size={18} className="mr-2"/>
-                    Input Item
+                    Item Input
                 </label>
                 <div className="tab-content bg-base-100 border-base-300 p-5">
                     <ItemInput />
@@ -56,7 +56,7 @@ const Input: FC = () => {
                 >
                     <input type="radio" name="my_tabs_4" checked={activeTab === "list-item"} readOnly />
                     <LuClipboardList size={18} className="mr-2"/>
-                    List Item
+                    Item List
                 </label>
                 <div className="tab-content bg-base-100 border-base-300 p-5">
                     <ItemList />
@@ -67,7 +67,7 @@ const Input: FC = () => {
                         <label className="tab">
                             <input type="radio" name="my_tabs_4" defaultChecked />
                             <RiEdit2Line size={18} className="mr-2"/>
-                            Edit Item
+                            Item Edit
                         </label>
                         <div className="tab-content bg-base-100 border-base-300 p-5">
                             <ItemEdit />
@@ -86,7 +86,7 @@ const Input: FC = () => {
                         >
                             <input type="radio" name="my_tabs_4" checked={activeTab === "input-user"} readOnly />
                             <LuUserPlus size={18} className="mr-2"/>
-                            Input User
+                            User Input
                         </label>
                         <div className="tab-content bg-base-100 border-base-300 p-5">
                             <UserInput />
@@ -101,7 +101,7 @@ const Input: FC = () => {
                         >
                             <input type="radio" name="my_tabs_4" checked={activeTab === "list-user"} readOnly />
                             <LuClipboardList size={18} className="mr-2"/>
-                            List User
+                            User List
                         </label>
                         <div className="tab-content bg-base-100 border-base-300 p-5">
                             <UserList />

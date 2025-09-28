@@ -1,9 +1,9 @@
 import { useEffect, useState, type FC } from "react";
 import { LuBookCheck, LuClock, LuPrinter } from "react-icons/lu";
 import { Completed } from "../subPages/order/completed";
-import { PendingPayment } from "../subPages/order/pendingPayment";
 import PrintOut from "./printOut";
 import { useLocation, useNavigate } from "react-router-dom";
+import { OnProcess } from "../subPages/order/onProcess";
 
 const Order:FC = () => {
     const location = useLocation();
@@ -31,10 +31,10 @@ const Order:FC = () => {
                 >
                     <input type="radio" name="my_tabs_4" checked={activeTab === "pending"} readOnly />
                     <LuClock size={18} className="mr-2"/>
-                    Pending Payment
+                    On Process
                 </label>
                 <div className="tab-content bg-base-100 border-base-300 p-5">
-                    <PendingPayment />
+                    <OnProcess />
                 </div>
 
                 <label 
