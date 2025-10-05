@@ -17,6 +17,7 @@ const MainLayout: FC = () => {
         if (path === "/input") return "Input";
         if (path === "/qr-generate") return "QR Generator";
         if (path.startsWith("/edit-input")) return "Edit Item";
+        if (path === "/company-profile") return "Company Profile";
         return "";
     };
 

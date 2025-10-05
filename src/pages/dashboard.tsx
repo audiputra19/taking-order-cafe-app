@@ -85,11 +85,11 @@ const Dashboard: FC = () => {
                     </div>
                 </div>
             </div>  
-            <div className="mt-5">
+            <div className="mt-10">
                 {selectFilter === 1 ? (
-                    <SalesPerformance />
+                    <SalesPerformance selectPeriode={selectPeriode} />
                 ) : (
-                    <RevenueAnalytics />
+                    <RevenueAnalytics selectPeriode={selectPeriode} />
                 )}
             </div>
         </div>

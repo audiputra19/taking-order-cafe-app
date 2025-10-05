@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../store";
 import { clearToken } from "../store/authSlice";
 import { usePostMeQuery } from "../services/apiAuth";
+import { useGetCompanyProfileQuery } from "../services/apiProfile";
 
 interface SidebarProps {
     pathname: string;
@@ -19,6 +20,10 @@ const Sidebar: FC<SidebarProps> = ({ pathname, collapsed }) => {
     const dispatch = useAppDispatch();
     const { data: MeData } = usePostMeQuery();
     const user = MeData?.user;
+    const { data: getCompanyProfile } = useGetCompanyProfileQuery(undefined, {
+        refetchOnReconnect: true,
+        refetchOnFocus: true
+    })
 
     let bagian = ''
     switch(user?.hak_akses) {
@@ -116,15 +121,25 @@ const Sidebar: FC<SidebarProps> = ({ pathname, collapsed }) => {
                         )}
                     >
                         <div className="flex gap-3 items-center">
-                            <div className={clsx(
-                                "flex justify-center items-center rounded bg-gradient-to-r from-green-600 to-green-500 w-9 h-9 text-base-200",
-                                !collapsed ? 'p-2' : ''
-                            )}>
-                                <PiCoffeeBeanFill size={20}/>
-                            </div>
+                            {getCompanyProfile ? (
+                                <div className="w-9 h-9">
+                                    <img 
+                                        src={`http://localhost:3001${getCompanyProfile.image_path}`}
+                                        alt={getCompanyProfile.image_title} 
+                                        className="rounded"
+                                    />
+                                </div>    
+                            ) : (
+                                <div className={clsx(
+                                    "flex justify-center items-center rounded bg-gradient-to-r from-green-600 to-green-500 w-9 h-9 text-base-200",
+                                    !collapsed ? 'p-2' : ''
+                                )}>
+                                    <PiCoffeeBeanFill size={20}/>
+                                </div>
+                            )}
                             {!collapsed && (
                                 <div>
-                                    <p className="font-semibold">Kopiku</p>
+                                    <p className="font-semibold">{getCompanyProfile?.name}</p>
                                     <p className="text-xs">Taking Order App</p>
                                 </div>
                             )}
@@ -152,11 +167,14 @@ const Sidebar: FC<SidebarProps> = ({ pathname, collapsed }) => {
                             )}
                         >
                             <div className="flex gap-3 items-center">
-                                <img 
+                                {/* <img 
                                     src="https://imgv3.fotor.com/images/blog-cover-image/10-profile-picture-ideas-to-make-you-stand-out.jpg"
                                     alt="profile picture"
                                     className="w-9 h-9 object-cover rounded"
-                                />
+                                /> */}
+                                <div className="w-9 h-9 rounded bg-black flex items-center justify-center text-blue-500 text-2xl font-semibold">
+                                    {user?.nama?.charAt(0).toUpperCase() || "U"}
+                                </div>
                                 {!collapsed && (
                                     <div>
                                         <p className="font-semibold text-sm">{user?.nama}</p>
@@ -170,18 +188,27 @@ const Sidebar: FC<SidebarProps> = ({ pathname, collapsed }) => {
                         </div>
                         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded border border-base-300 p-0 ml-1 z-1 w-52 shadow-lg">
                             <div className="flex gap-3 px-3 pt-3 pb-2">
-                                <img 
+                                {/* <img 
                                     src="https://imgv3.fotor.com/images/blog-cover-image/10-profile-picture-ideas-to-make-you-stand-out.jpg"
                                     alt="profile picture"
                                     className="w-9 h-9 object-cover rounded"
-                                />
+                                /> */}
+                                <div className="w-9 h-9 rounded bg-black flex items-center justify-center text-blue-500 text-2xl font-semibold">
+                                    {user?.nama?.charAt(0).toUpperCase() || "U"}
+                                </div>
                                 <div>
-                                    <p className="font-semibold text-sm">{MeData?.user.nama}</p>
-                                    <p className="text-xs">Admin</p>
+                                    <p className="font-semibold text-sm">{user?.nama}</p>
+                                    <p className="text-xs">{bagian}</p>
                                 </div>  
                             </div>
-                            <li className="border-b border-base-300 p-1">
-                                <span><LuCircleUser size={18} className="text-gray-500"/>Profile</span>
+                            <li 
+                                className="border-b border-base-300 p-1"
+                                onClick={() => {
+                                    navigate('/company-profile');
+                                    (document.activeElement as HTMLElement)?.blur();
+                                }}
+                            >
+                                <span><LuCircleUser size={18} className="text-gray-500"/>Company Profile</span>
                             </li>
                             <li 
                                 className="p-1"

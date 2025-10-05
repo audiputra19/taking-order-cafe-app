@@ -19,15 +19,22 @@ export type CategoryOrder = {
 
 interface CategoryBarChartProps {
   data: CategoryOrder[];
+  label?: string;
   height?: number;
 }
 
+const MAX_LABEL_LENGTH = 10;
 const BarChart: React.FC<CategoryBarChartProps> = ({
   data,
+  label,
   height = 300,
 }) => {
   const { labels, values, maxCategory } = useMemo(() => {
-    const labels = data.map((d) => d.category);
+    const labels = data.map((d) =>
+      d.category.length > MAX_LABEL_LENGTH
+        ? d.category.slice(0, MAX_LABEL_LENGTH) + "..."
+        : d.category
+    );
     const values = data.map((d) => d.qty);
 
     const maxCategory = data.reduce(
@@ -42,7 +49,7 @@ const BarChart: React.FC<CategoryBarChartProps> = ({
     labels,
     datasets: [
       {
-        label: "Orders",
+        label,
         data: values,
         backgroundColor: "rgba(75, 192, 192, 0.5)",
         borderColor: "rgba(75, 192, 192, 1)",
@@ -57,7 +64,17 @@ const BarChart: React.FC<CategoryBarChartProps> = ({
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: { mode: "index" as const, intersect: false },
+      tooltip: {
+        mode: "index" as const,
+        intersect: false,
+        callbacks: {
+          // tooltip menampilkan nama kategori penuh
+          title: (tooltipItems: any) => {
+            const idx = tooltipItems[0].dataIndex;
+            return data[idx].category;
+          },
+        },
+      },
     },
     scales: {
       x: { ticks: { font: { size: 12 } } },

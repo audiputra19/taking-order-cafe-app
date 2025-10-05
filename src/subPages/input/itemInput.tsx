@@ -10,6 +10,7 @@ import LoadingPage from "../../components/loadingPage";
 const ItemInput: FC = () => {
     const [form, setForm] = useState<CreateProductRequest>({
         nama: '',
+        hpp: '' as unknown as number,
         harga: '' as unknown as number,
         kategori: '' as unknown as number,
         deskripsi: '',
@@ -58,6 +59,7 @@ const ItemInput: FC = () => {
             showAlert(res.message);
             setForm({
                 nama: '',
+                hpp: 0,
                 harga: 0,
                 kategori: 0,
                 deskripsi: '',
@@ -98,11 +100,11 @@ const ItemInput: FC = () => {
                             type="number" 
                             className="input w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
-                            placeholder="Harga"
-                            value={form.harga === 0 ? '' : form.harga}
+                            placeholder="HPP"
+                            value={form.hpp === 0 ? '' : form.hpp}
                             onChange={(e) => setForm(prev => ({
                                 ...prev, 
-                                harga: e.target.value === '' ? 0 : Number(e.target.value)
+                                hpp: e.target.value === '' ? 0 : Number(e.target.value)
                             }))} 
                         />
                         <select  
@@ -120,6 +122,17 @@ const ItemInput: FC = () => {
                             <option value={3}>Snack</option>
                             <option value={4}>Coffee</option>
                         </select>
+                        <input 
+                            type="number" 
+                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            required 
+                            placeholder="Harga"
+                            value={form.harga === 0 ? '' : form.harga}
+                            onChange={(e) => setForm(prev => ({
+                                ...prev, 
+                                harga: e.target.value === '' ? 0 : Number(e.target.value)
+                            }))} 
+                        />
                     </div>
                     <div className="flex flex-col gap-5">
                         <fieldset className="fieldset">

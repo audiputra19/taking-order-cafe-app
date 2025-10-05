@@ -1,24 +1,32 @@
 import moment from 'moment';
 import { useEffect, type FC } from "react";
-import { useAcceptOrderByDapurMutation, useAcceptOrderByKasirMutation, useFinishOrderMutation, useGetOrderQuery, usePaidOrderByKasirMutation, useReadyOrderMutation } from "../../services/apiOrder";
-import { socket, socket2 } from "../../socket";
-import { usePostMeQuery } from '../../services/apiAuth';
-import LoadingPage from '../../components/loadingPage';
-import { MdOutlineDoneOutline, MdOutlinePaid } from 'react-icons/md';
 import { LuFileClock, LuPackageCheck } from 'react-icons/lu';
+import { MdOutlinePaid } from 'react-icons/md';
 import { TbCurrencyDollarOff, TbRotateClockwise2 } from 'react-icons/tb';
+import LoadingPage from '../../components/loadingPage';
+import { usePostMeQuery } from '../../services/apiAuth';
+import { useAcceptOrderByDapurMutation, useAcceptOrderByKasirMutation, useCancelOrderByKasirMutation, useFinishOrderMutation, useGetOrderQuery, usePaidOrderByKasirMutation, useReadyOrderMutation } from "../../services/apiOrder";
+import { socket, socket2 } from "../../socket";
 
 export const OnProcess: FC = () => {
-    const { data: getOrder, isLoading: isLoadingGetOrder, refetch } = useGetOrderQuery(undefined, {
-        refetchOnMountOrArgChange: true
+    const { data: getOrder, isLoading: isLoadingGetOrder, isError, refetch } = useGetOrderQuery(undefined, {
+        refetchOnFocus: true,
+        refetchOnReconnect: true,
     });
     const { data: MeData } = usePostMeQuery();
     const user = MeData?.user;
     const [paidByKasir, {isLoading: isLoadingPaidByKasir}] = usePaidOrderByKasirMutation();
+    const [cancelByKasir, {isLoading: isLoadingCancelByKasir}] = useCancelOrderByKasirMutation();
     const [acceptByKasir, {isLoading: isLoadingAccByKasir}] = useAcceptOrderByKasirMutation();
     const [acceptByDapur, {isLoading: isLoadingAccByDapur}] = useAcceptOrderByDapurMutation();
     const [ready, {isLoading: isLoadingReady}] = useReadyOrderMutation();
     const [finish, {isLoading: isLoadingFinish}] = useFinishOrderMutation();
+
+    useEffect(() => {
+        if(isError) {
+            refetch();
+        }
+    }, [isError, refetch]);
 
     useEffect(() => {
         socket2.on("order:new", () => {
@@ -50,6 +58,12 @@ export const OnProcess: FC = () => {
         refetch();
     };
 
+    const handleCancelByKasir = async (order_id: string) => {
+        if (!Confirm()) return;
+        await cancelByKasir({ order_id });
+        refetch();
+    };
+
     const handleAcceptByKasir = async (order_id: string) => {
         if (!Confirm()) return;
         await acceptByKasir({ order_id });
@@ -76,8 +90,8 @@ export const OnProcess: FC = () => {
 
     return (
         <>
-            {isLoadingGetOrder || isLoadingPaidByKasir || isLoadingAccByKasir || isLoadingAccByDapur ||
-            isLoadingReady || isLoadingFinish && (
+            {isLoadingGetOrder || isLoadingPaidByKasir || isLoadingCancelByKasir || isLoadingAccByKasir || 
+            isLoadingAccByDapur || isLoadingReady || isLoadingFinish && (
                 <LoadingPage />
             )}
             <div className="overflow-x-auto">
@@ -159,12 +173,22 @@ export const OnProcess: FC = () => {
                                         {/* Hak Kasir */}
                                         {user?.hak_akses === 2 ? (
                                             item.metode === "cash" && item.status === "unpaid" ? (
-                                                <button
-                                                    className="btn btn-sm bg-gradient-to-r from-green-600 to-green-500 text-white rounded border-none"
-                                                    onClick={() => handlePaidByKasir(item.order_id)}
-                                                >
-                                                    Paid
-                                                </button>
+                                                <div className='flex justify-center items-center gap-2'>
+                                                    <button
+                                                        className="btn btn-sm bg-gradient-to-r from-green-600 to-green-500 text-white rounded border-none"
+                                                        onClick={() => handlePaidByKasir(item.order_id)}
+                                                    >
+                                                        Paid
+                                                    </button>
+
+                                                    {/* Cancel Button */}
+                                                    <button
+                                                        className="btn btn-sm bg-gradient-to-r from-red-600 to-red-500 text-white rounded border-none"
+                                                        onClick={() => handleCancelByKasir(item.order_id)}
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
                                             ) : (
                                                 item.proses === "pending" ? (
                                                     <button
@@ -222,12 +246,22 @@ export const OnProcess: FC = () => {
                                         ) : (
                                             <>
                                                 {item.metode === "cash" && item.status === "unpaid" ? (
-                                                    <button
-                                                        className="btn btn-sm bg-gradient-to-r from-green-600 to-green-500 text-white rounded border-none"
-                                                        onClick={() => handlePaidByKasir(item.order_id)}
-                                                    >
-                                                        Paid
-                                                    </button>
+                                                    <div className='flex justify-center items-center gap-2'>
+                                                        <button
+                                                            className="btn btn-sm bg-gradient-to-r from-green-600 to-green-500 text-white rounded border-none"
+                                                            onClick={() => handlePaidByKasir(item.order_id)}
+                                                        >
+                                                            Paid
+                                                        </button>
+
+                                                        {/* Cancel Button */}
+                                                        <button
+                                                            className="btn btn-sm bg-gradient-to-r from-red-600 to-red-500 text-white rounded border-none"
+                                                            onClick={() => handleCancelByKasir(item.order_id)}
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                    </div>
                                                 ) : (
                                                     <>
                                                         {item.proses === "pending" && (

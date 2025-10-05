@@ -54,7 +54,7 @@ const DonutChart: FC<DonutChartProps> = ({ orders, height, colors }) => {
           pointStyle: "circle",
           padding: 15,
           boxWidth: 12,
-          boxHeight: 12,
+          boxHeight: 10,
           generateLabels: (chart: any) => {
             const dataset = chart.data.datasets[0];
             const total = dataset.data.reduce((a: number, b: number) => a + b, 0);

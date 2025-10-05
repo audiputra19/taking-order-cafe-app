@@ -1,51 +1,77 @@
-import type { FC } from "react";
+import { useEffect, type FC } from "react";
 import { LuBadgeCheck, LuBadgePercent, LuBadgeX } from "react-icons/lu";
-import { MdInsertChart, MdOutlineInfo, MdOutlineTrendingUp } from "react-icons/md";
-import DonutChart from "../../components/charts/DonutChart";
-import LineChart from "../../components/charts/lineChart";
+import { MdCheckCircleOutline, MdInsertChart, MdOutlineInfo, MdOutlineTrendingFlat, MdOutlineTrendingUp } from "react-icons/md";
 import BarChart from "../../components/charts/barChart";
-import { TbClockCheck } from "react-icons/tb";
+import DonutChart from "../../components/charts/DonutChart";
+import LineChart, { type RangeType } from "../../components/charts/lineChart";
+import { getCategoryName } from "../../components/getCategoryName";
+import { getRangeLineChart } from "../../components/getRangeLineChart";
+import { useAverageFulfillmentTimeMutation, useAverageOrderMutation, useBestSellingProductsMutation, useCategoryPerformanceMutation, useLowestSellingProductsMutation, useOrderCanceledMutation, useOrderTrendQuery, usePeakOrderTimeMutation, useTotalOrderMutation } from "../../services/apiDashboard";
 
-export const SalesPerformance: FC = () => {
-    const productOrders = [
-        { name: "Chicken Katsu Ala Jepang", qty: 150 },
-        { name: "Iced Caramel Latte", qty: 100 },
-        { name: "Kopi Butterscotch", qty: 80 },
-        { name: "French Fries", qty: 75 },
-        { name: "Cheese Cake", qty: 55 },
-    ];
+interface SalesPerformanceProps {
+    selectPeriode: number;
+}
 
-    const categoryOrders = [
-        { category: "Food", qty: 320 },
-        { category: "Beverage", qty: 200 },
-        { category: "Coffee", qty: 180 },
-        { category: "Dessert", qty: 140 },
-        { category: "Snack", qty: 90 },
-    ];
+export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) => {
+    const [totalOrder, { data: getTotalOrder, isLoading: isLoadingGetTotalOrder }] = useTotalOrderMutation();
+    const [orderCanceled, { data: getOrderCanceled, isLoading: isLoadingGetOrderCanceled }] = useOrderCanceledMutation();
+    const [averageOrder, { data: getAverageOrder, isLoading: isLoadingGetAverageOrder }] = useAverageOrderMutation();
+    const [categoryPerformance, { data: getCategoryPerformance, isLoading: isLoadingGetCategoryPerformance }] = useCategoryPerformanceMutation();
+    const { data: getOrderTrend } = useOrderTrendQuery();
+    const [bestSellingProd, { data: getBestSellingProd }] = useBestSellingProductsMutation();
+    const [lowestSellingProd, { data: getLowestSellingProd }] = useLowestSellingProductsMutation();
+    const [averageFulfillmentTime, { data: getAverageFulFillmentTime, isLoading: isLoadingGetAverageFulFillmentTime }] = useAverageFulfillmentTimeMutation();
+    const [peakOrderTime, { data: getPeakOrderTime }] = usePeakOrderTimeMutation();
 
-    const peakOrderTime = [
-        { category: "11 AM", qty: 52 },
-        { category: "9 AM", qty: 48 },
-        { category: "8 AM", qty: 36 },
-    ];
+    // console.log(getAverageFulFillmentTime)
+    
+    useEffect(() => {
+        if(selectPeriode) {
+            totalOrder({ periode: selectPeriode });
+            orderCanceled({ periode: selectPeriode });
+            averageOrder({ periode: selectPeriode });
+            categoryPerformance({ periode: selectPeriode });
+            bestSellingProd({ periode: selectPeriode });
+            lowestSellingProd({ periode: selectPeriode });
+            averageFulfillmentTime({ periode: selectPeriode });
+            peakOrderTime({ periode: selectPeriode });
+        }
+    }, [selectPeriode])
+    
+    const generateGrowthPercent = (current: number, previous: number): string => {
+        const curr = current || 0;
+        const prev = previous || 0;
 
-    const orders = [
-        { id: 1, createdAt: "2025-09-01T10:00:00Z", qty: 2 },
-        { id: 2, createdAt: "2025-09-05T15:30:00Z", qty: 5 },
-        { id: 3, createdAt: "2025-09-07T12:45:00Z", qty: 1 },
-        { id: 4, createdAt: "2025-09-08T09:20:00Z", qty: 3 },
-        { id: 5, createdAt: "2025-09-12T14:10:00Z", qty: 4 },
-        { id: 6, createdAt: "2025-09-15T18:25:00Z", qty: 6 },
-        { id: 7, createdAt: "2025-09-16T20:40:00Z", qty: 7 },
-        { id: 8, createdAt: "2025-09-22T11:05:00Z", qty: 2 },
-        { id: 9, createdAt: "2025-10-20T09:15:00Z", qty: 3 },
-        { id: 10, createdAt: "2025-11-22T13:50:00Z", qty: 4 },
-        { id: 11, createdAt: "2025-12-25T16:30:00Z", qty: 8 },
-        { id: 12, createdAt: "2025-12-27T08:45:00Z", qty: 5 },
-    ];
+        if (prev > 0) {
+            const percent = ((curr - prev) / prev) * 100;
+            return `${percent >= 0 ? "+" : ""}${percent.toFixed(2)}%`;
+        } else if (curr > 0) {
+            return "+100%";
+        } else {
+            return "0%";
+        }
+    }
 
-    const colorBest = ["#031F44","#07489C","#0B70F4","#63A3F8","#BBD7FC","#E7F1FE",]
-    const colorLowest = ["#750000","#A30000","#FF0000","#FF5C5C","#FF8A8A","#FFE6E6",]
+    const renderTrendIcon = (current: number, previous: number) => {
+        const curr = current ?? 0;
+        const prev = previous ?? 0;
+
+        if (prev === 0) {
+            if (curr > 0) {
+                return <MdOutlineTrendingUp size={25} className="text-green-500" />;
+            }
+            return <MdOutlineTrendingFlat size={25} className="text-gray-400" />;
+        }
+
+        return curr >= prev ? (
+            <MdOutlineTrendingUp size={25} className="text-green-500" />
+        ) : (
+            <MdOutlineTrendingUp size={25} className="rotate-180 text-red-500" />
+        );
+    };
+
+    const colorBest = ["#011f4b","#03396c","#005b96","#6497b1","#b3cde0",]
+    const colorLowest = ["#a70000","#ff0000","#ff5252","#ff7b7b","#ffbaba",]
 
     return (
         <>
@@ -62,52 +88,95 @@ export const SalesPerformance: FC = () => {
                 <div className="grid grid-cols-3 gap-5">
                     <div className="border border-base-300 bg-base-100 p-5 rounded">
                         <div className="flex justify-between items-center">
-                            <p className="text-lg font-semibold">Total Order</p>
+                            <p className="text-lg text-gray-500 font-semibold">Total Order</p>
                             <div className="border border-base-300 p-1 bg-base-200 rounded-full">
                                 <LuBadgeCheck size={35} className="text-green-500"/>    
                             </div>
                         </div>
                         <div className="mt-1">
-                            <p className="text-2xl font-bold">1086 orders</p>
+                            {isLoadingGetTotalOrder ? (
+                                <div className="skeleton h-5 w-32"></div>
+                            ) : (
+                                <p className="text-2xl font-bold">{getTotalOrder?.current.total_order ?? 0} orders</p>
+                            )}
                         </div>
                         <div className="mt-2">
                             <div className="flex items-center gap-2">
-                                <MdOutlineTrendingUp size={25} className="text-green-500"/>
-                                <p className="text-xs text-gray-400">+10% from past month</p>
+                                {renderTrendIcon(
+                                    getTotalOrder?.current.total_order ?? 0,
+                                    getTotalOrder?.previous.total_order ?? 0
+                                )}
+                                <p className="text-xs text-gray-400">
+                                    {generateGrowthPercent(
+                                        getTotalOrder?.current.total_order ?? 0, 
+                                        getTotalOrder?.previous.total_order ?? 0
+                                    )} 
+                                    <span className="ml-1">from past month</span>
+                                </p>
                             </div>
                         </div>
                     </div>
                     <div className="border border-base-300 bg-base-100 p-5 rounded">
                         <div className="flex justify-between items-center">
-                            <p className="text-lg font-semibold">Order Canceled</p>
+                            <p className="text-lg text-gray-500 font-semibold">Order Canceled</p>
                             <div className="border border-base-300 p-1 bg-base-200 rounded-full">
                                 <LuBadgeX size={35} className="text-red-500"/>    
                             </div>
                         </div>
                         <div className="mt-1">
-                            <p className="text-2xl font-bold">12 orders</p>
+                            {isLoadingGetOrderCanceled ? (
+                                <div className="skeleton h-5 w-32"></div>
+                            ) : (
+                                <p className="text-2xl font-bold">{getOrderCanceled?.current.total_order ?? 0} orders</p>
+                            )}
                         </div>
                         <div className="mt-2">
                             <div className="flex items-center gap-2">
-                                <MdOutlineTrendingUp size={25} className="text-green-500"/>
-                                <p className="text-xs text-gray-400">+5% from past month</p>
+                                {renderTrendIcon(
+                                    getOrderCanceled?.current.total_order ?? 0,
+                                    getOrderCanceled?.previous.total_order ?? 0
+                                )}
+                                <p className="text-xs text-gray-400">
+                                    {generateGrowthPercent(
+                                        getOrderCanceled?.current.total_order ?? 0, 
+                                        getOrderCanceled?.previous.total_order ?? 0
+                                    )} 
+                                    <span className="ml-1">from past month</span>
+                                </p>
                             </div>
                         </div>
                     </div>
                     <div className="border border-base-300 bg-base-100 p-5 rounded">
                         <div className="flex justify-between items-center">
-                            <p className="text-lg font-semibold">Average Orders per day</p>
+                            <p className="text-lg text-gray-500 font-semibold">
+                                Average Orders per {getAverageOrder?.current.unit ?? 'days'}
+                            </p>
                             <div className="border border-base-300 p-1 bg-base-200 rounded-full">
                                 <LuBadgePercent size={35} className="text-blue-500"/>    
                             </div>
                         </div>
                         <div className="mt-1">
-                            <p className="text-2xl font-bold">36 orders / day</p>
+                            {isLoadingGetAverageOrder ? (
+                                <div className="skeleton h-5 w-32"></div>
+                            ) : (
+                                <p className="text-2xl font-bold">
+                                    {getAverageOrder?.current.average ?? 0} orders / {getAverageOrder?.current.unit ?? 'days'}
+                                </p>
+                            )}
                         </div>
                         <div className="mt-2">
                             <div className="flex items-center gap-2">
-                                <MdOutlineTrendingUp size={25} className="text-green-500"/>
-                                <p className="text-xs text-gray-400">+5% from past month</p>
+                                {renderTrendIcon(
+                                    getAverageOrder?.current.average ?? 0,
+                                    getAverageOrder?.previous.average ?? 0
+                                )}
+                                <p className="text-xs text-gray-400">
+                                    {generateGrowthPercent(
+                                        getAverageOrder?.current.average ?? 0, 
+                                        getAverageOrder?.previous.average ?? 0
+                                    )} 
+                                    <span className="ml-1">from past month</span>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -120,25 +189,41 @@ export const SalesPerformance: FC = () => {
                 <div className="grid grid-cols-2 gap-5">
                     <div className="border border-base-300 bg-base-100 p-5 rounded">
                         <div>
-                            <p className="text-lg font-semibold">Order Trend</p>
+                            <p className="text-lg text-gray-500 font-semibold">Order Trend</p>
                         </div>
                         <div className="mt-3">
-                            <LineChart
-                                orders={orders}
-                                range="last30"
-                                height={150}
-                            />
+                            {getOrderTrend ? (
+                                <LineChart
+                                    orders={getOrderTrend ?? []}
+                                    label="Orders"
+                                    range={getRangeLineChart(selectPeriode) as RangeType}
+                                    height={150}
+                                />
+                            ) : (
+                                <div className="flex justify-center mt-5">
+                                    <p className="text-sm text-gray-400">No data available</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="border border-base-300 bg-base-100 p-5 rounded">
                         <div>
-                            <p className="text-lg font-semibold">Category Performance</p>
+                            <p className="text-lg text-gray-500 font-semibold">Category Performance</p>
                         </div>
                         <div className="mt-3">
-                            <BarChart
-                                data={categoryOrders}
-                                height={150}
-                            />
+                            {getCategoryPerformance ? (
+                                <BarChart
+                                    data={(getCategoryPerformance ?? []).map(d => ({
+                                        category: getCategoryName(d.category),
+                                        qty: Number(d.qty),
+                                    }))}
+                                    height={150}
+                                />
+                            ) : (
+                                <div className="flex justify-center mt-5">
+                                    <p className="text-sm text-gray-400">No data available</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -150,69 +235,115 @@ export const SalesPerformance: FC = () => {
                 <div className="grid grid-cols-3 gap-5">
                     <div className="row-span-2 border border-base-300 bg-base-100 p-5 rounded">
                         <div>
-                            <p className="text-lg font-semibold">Top 5 Best-Selling Products</p>
+                            <p className="text-lg text-gray-500 font-semibold">Top 5 Best-Selling Products</p>
                         </div>
                         <div className="mt-2">
-                            <DonutChart 
-                                orders={productOrders} 
-                                height={380}
-                                colors={colorBest}
-                            />
+                            {getBestSellingProd ? (
+                                <DonutChart 
+                                    orders={getBestSellingProd ?? []} 
+                                    height={380}
+                                    colors={colorBest}
+                                />
+                            ) : (
+                                <div className="flex justify-center mt-5">
+                                    <p className="text-sm text-gray-400">No data available</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="flex flex-col gap-5 row-span-2">
                         <div className="border border-base-300 bg-base-100 p-5 rounded">
                             <div className="flex justify-between items-center">
-                                <p className="text-lg font-semibold">Average Fulfillment Time</p>
+                                <p className="text-lg text-gray-500 font-semibold">Average Fulfillment Time</p>
                             </div>
-                            <div className="mt-1">
-                                <p className="text-2xl font-bold">20 minutes</p>
+                            <div className="mt-2">
+                                {isLoadingGetAverageFulFillmentTime ? (
+                                    <div className="skeleton h-5 w-32"></div>
+                                ) : (
+                                    <p className="text-2xl font-bold">
+                                        {getAverageFulFillmentTime?.total ?? 0} minutes
+                                    </p>
+                                )}
                             </div>
-                            <div className="mt-1">
-                                <div className="flex flex-col gap-1 border border-base-300 bg-base-200 rounded p-2 text-xs text-gray-500">
+                            <div className="mt-2">
+                                <div className="flex flex-col gap-1 border border-base-300 bg-base-200 rounded p-3 text-xs text-gray-500">
                                     <div className="flex">
                                         <p className="w-18">Acc Kasir</p>
-                                        <span>: 1 menit</span>
+                                        {isLoadingGetAverageFulFillmentTime ? (
+                                            <div className="skeleton h-3 w-32"></div>
+                                        ) : (
+                                            <span>: {getAverageFulFillmentTime?.acc_kasir ?? 0} minutes</span>
+                                        )}
                                     </div>
                                     <div className="flex">
                                         <p className="w-18">Acc Dapur</p>
-                                        <span>: 5 menit</span>
+                                        {isLoadingGetAverageFulFillmentTime ? (
+                                            <div className="skeleton h-3 w-32"></div>
+                                        ) : (
+                                            <span>: {getAverageFulFillmentTime?.acc_dapur ?? 0} minutes</span>
+                                        )}
                                     </div>
                                     <div className="flex">
                                         <p className="w-18">Ready</p>
-                                        <span>: 14 menit</span>
+                                        {isLoadingGetAverageFulFillmentTime ? (
+                                            <div className="skeleton h-3 w-32"></div>
+                                        ) : (
+                                            <span>: {getAverageFulFillmentTime?.ready ?? 0} minutes</span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
-                            <div className="mt-2">
-                                <div className="flex items-center gap-2">
-                                    <MdOutlineInfo size={20} className="text-red-500"/>
-                                    <p className="text-xs text-gray-400">The process takes too long</p>
-                                </div>
+                            <div className="mt-3">
+                                    {getAverageFulFillmentTime && 
+                                    getAverageFulFillmentTime?.total < 15 && (
+                                        <div className="flex items-center gap-2">
+                                            <MdCheckCircleOutline size={20} className="text-green-500"/>
+                                            <p className="text-xs text-gray-400">The process is good</p>
+                                        </div>
+                                    )}
+
+                                    {getAverageFulFillmentTime && getAverageFulFillmentTime?.total > 15 && (
+                                        <div className="flex items-center gap-2">
+                                            <MdOutlineInfo size={20} className="text-red-500"/>
+                                            <p className="text-xs text-gray-400">The process takes too long</p>
+                                        </div>
+                                    )}
                             </div>
                         </div>
                         <div className="border border-base-300 bg-base-100 p-5 rounded h-full">
                             <div>
-                                <p className="text-lg font-semibold">Peak Order Time</p>
+                                <p className="text-lg text-gray-500 font-semibold">Peak Order Time</p>
                             </div>
                             <div className="mt-3">
-                                <BarChart
-                                    data={peakOrderTime}
-                                    height={150}
-                                />
+                                {getPeakOrderTime ? (
+                                    <BarChart
+                                        data={getPeakOrderTime ?? []}
+                                        height={150}
+                                    />
+                                ) : (
+                                    <div className="flex justify-center mt-5">
+                                        <p className="text-sm text-gray-400">No data available</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
                     <div className="row-span-2 border border-base-300 bg-base-100 p-5 rounded">
                         <div>
-                            <p className="text-lg font-semibold">Top 5 Lowest-Selling Products</p>
+                            <p className="text-lg text-gray-500 font-semibold">Top 5 Lowest-Selling Products</p>
                         </div>
                         <div className="mt-2">
-                            <DonutChart 
-                                orders={productOrders} 
-                                height={380}
-                                colors={colorLowest}
-                            />
+                            {getLowestSellingProd ? (
+                                <DonutChart 
+                                    orders={getLowestSellingProd ?? []} 
+                                    height={380}
+                                    colors={colorLowest}
+                                />
+                            ) : (
+                                <div className="flex justify-center mt-5">
+                                    <p className="text-sm text-gray-400">No data available</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

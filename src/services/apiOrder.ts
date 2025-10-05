@@ -29,6 +29,14 @@ export const apiOrder = createApi({
             }),
             invalidatesTags: ["Order"]
         }),
+        cancelOrderByKasir: builder.mutation<OrderResponse, OrderRequest>({
+            query: (body) => ({
+                url: 'order/cancel-kasir',
+                method: 'POST',
+                body
+            }),
+            invalidatesTags: ["Order"]
+        }),
         acceptOrderByKasir: builder.mutation<OrderResponse, OrderRequest>({
             query: (body) => ({
                 url: 'order/accept-kasir',
@@ -72,5 +80,6 @@ export const apiOrder = createApi({
 })
 
 export const { useGetOrderQuery, useGetOrderCompleteQuery, usePaidOrderByKasirMutation,
-    useAcceptOrderByKasirMutation, useAcceptOrderByDapurMutation, useReadyOrderMutation, 
-    useFinishOrderMutation, useLazyGetOrderByIdQuery, useGetOrderByIdQuery} = apiOrder;
+    useCancelOrderByKasirMutation, useAcceptOrderByKasirMutation, useAcceptOrderByDapurMutation, 
+    useReadyOrderMutation, useFinishOrderMutation, useLazyGetOrderByIdQuery, useGetOrderByIdQuery
+} = apiOrder;

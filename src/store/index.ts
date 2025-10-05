@@ -8,6 +8,8 @@ import authSlice from './authSlice'
 import darkMode from './darkModeSlice'
 import { apiAuth } from "../services/apiAuth";
 import { apiUser } from "../services/apiUser";
+import { apiDashboard } from "../services/apiDashboard";
+import { apiProfile } from "../services/apiProfile";
 
 const persistConfig = {
     key: 'root',
@@ -22,13 +24,15 @@ const rootReducer = combineReducers({
     [apiOrder.reducerPath]: apiOrder.reducer,
     [apiAuth.reducerPath]: apiAuth.reducer,
     [apiUser.reducerPath]: apiUser.reducer,
+    [apiDashboard.reducerPath]: apiDashboard.reducer,
+    [apiProfile.reducerPath]: apiProfile.reducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
     reducer: persistedReducer,
-    middleware: (getDefaultMiddleware) => 
+    middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false
         }).concat(
@@ -36,6 +40,8 @@ export const store = configureStore({
             apiOrder.middleware,
             apiAuth.middleware,
             apiUser.middleware,
+            apiDashboard.middleware,
+            apiProfile.middleware
         )
 });
 

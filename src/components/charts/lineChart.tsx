@@ -11,6 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import moment from "moment-timezone";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
@@ -25,14 +26,15 @@ export type RangeType = "last30" | "yearToDate" | "weekly" | "quarterly" | "cust
 interface OrderBarChartProps {
   orders: Order[];
   range: RangeType;
-  startDate?: string; // ISO
-  endDate?: string; // ISO
+  startDate?: string;
+  endDate?: string;
+  label?: string;
   title?: string;
   height?: number;
 }
 
 function fmtDate(d: Date) {
-  return d.toLocaleDateString();
+  return moment(d).tz("Asia/Jakarta").format("DD MMM");
 }
 
 function startOfDay(d: Date) {
@@ -53,25 +55,34 @@ function addDays(d: Date, days: number) {
   return x;
 }
 
+
 function getStartEnd(range: RangeType, startDate?: string, endDate?: string) {
-  const today = new Date();
+  const today = moment().tz("Asia/Jakarta"); // selalu WIB
+
   if (range === "last30") {
-    const end = endOfDay(today);
-    const start = startOfDay(addDays(end, -29));
+    const end = today.clone().endOf("day").toDate();
+    const start = today.clone().subtract(29, "days").startOf("day").toDate();
     return { start, end };
   }
   if (range === "yearToDate" || range === "quarterly") {
-    const start = startOfDay(new Date(today.getFullYear(), 0, 1));
-    const end = endOfDay(new Date(today.getFullYear(), 11, 31)); // akhir tahun
+    const start = today.clone().startOf("year").toDate();
+    const end = today.clone().endOf("year").toDate();
     return { start, end };
   }
   if (range === "weekly") {
-    const end = endOfDay(today);
-    const start = startOfDay(addDays(end, -6));
+    const end = today.clone().endOf("day").toDate();
+    const start = today.clone().subtract(6, "days").startOf("day").toDate();
     return { start, end };
   }
-  const s = startDate ? startOfDay(new Date(startDate)) : startOfDay(today);
-  const e = endDate ? endOfDay(new Date(endDate)) : endOfDay(today);
+
+  const s = startDate
+    ? moment(startDate).tz("Asia/Jakarta").startOf("day").toDate()
+    : today.clone().startOf("day").toDate();
+
+  const e = endDate
+    ? moment(endDate).tz("Asia/Jakarta").endOf("day").toDate()
+    : today.clone().endOf("day").toDate();
+
   return { start: s, end: e };
 }
 
@@ -135,7 +146,7 @@ function bucketPerMonth(orders: Order[], start: Date, end: Date) {
   while (y < eY || (y === eY && m <= eM)) {
     const label = new Date(y, m, 1).toLocaleString(undefined, {
       month: "short",
-      year: "numeric",
+      // year: "numeric",
     });
     buckets.push({ label, year: y, month: m, total: 0 });
     m += 1;
@@ -198,6 +209,7 @@ const LineChart: React.FC<OrderBarChartProps> = ({
   range,
   startDate,
   endDate,
+  label,
   title,
   height = 300,
 }) => {
@@ -212,7 +224,7 @@ const LineChart: React.FC<OrderBarChartProps> = ({
     let buckets: { label: string; total: number }[] = [];
 
     if (range === "last30") {
-      buckets = bucketPerWeek(filtered, start, end);
+      buckets = bucketPerDay(filtered, start, end);
     } else if (range === "weekly") {
       buckets = bucketPerDay(filtered, start, end);
     } else if (range === "quarterly") {
@@ -237,7 +249,7 @@ const LineChart: React.FC<OrderBarChartProps> = ({
     labels,
     datasets: [
       {
-        label: "Orders",
+        label,
         data,
         backgroundColor: "rgba(75, 192, 192, 0.5)",
         borderColor: "rgba(75, 192, 192, 1)",

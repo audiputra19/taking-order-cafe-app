@@ -64,7 +64,11 @@ export const Completed: FC = () => {
                             case "expired":
                                 colorStatus = "border-red-500 text-red-500";
                                 iconStatus = <TbCurrencyDollarOff size={16} />;
-                                break;     
+                                break;
+                            case "canceled":
+                                colorStatus = "border-red-500 text-red-500";
+                                iconStatus = <TbCurrencyDollarOff size={16} />;
+                                break;        
                         }
 
                         let colorProses = "border-green-500 text-green-500";

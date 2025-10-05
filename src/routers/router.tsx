@@ -7,6 +7,7 @@ import Login from "../pages/login";
 import Order from "../pages/order";
 import QRTableGenerator from "../pages/qrTableGenerator";
 import { ProtectedRoute } from "./protectedRoute";
+import CompanyProfile from "../pages/companyProfile";
 
 const Router: FC = () => {
     const routes = [
@@ -37,6 +38,10 @@ const Router: FC = () => {
                 {
                     path: '/print-out/:id',
                     element: <Order />
+                },
+                {
+                    path: '/company-profile',
+                    element: <CompanyProfile />
                 }
             ]
         },

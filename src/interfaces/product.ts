@@ -1,6 +1,7 @@
 export interface GetProductResponse {
     id: string;
     nama: string;
+    hpp: number;
     harga: number;
     kategori: number;
     deskripsi: string;
@@ -11,6 +12,7 @@ export interface GetProductResponse {
 
 export interface CreateProductRequest {
     nama: string;
+    hpp: number;
     harga: number;
     kategori: number;
     deskripsi: string;
@@ -24,6 +26,7 @@ export interface CreateProductResponse {
 export interface UpdateProductRequest {
     id: string;
     nama: string;
+    hpp: number;
     harga: number;
     kategori: number;
     deskripsi: string;
