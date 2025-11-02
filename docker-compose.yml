@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  customer:
+    build: ./order-cafe-app
+    container_name: order-cafe-app
+    ports:
+      - "8080:80"
+    restart: always
+
+  admin:
+    build: ./taking-order-cafe-app
+    container_name: taking-order-cafe-app
+    ports:
+      - "8081:80"
+    restart: always

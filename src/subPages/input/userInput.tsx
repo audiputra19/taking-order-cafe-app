@@ -110,7 +110,7 @@ const UserInput: FC = () => {
                             <input 
                                 type={showConfirmPassword === 'confirmPassword' ? 'password' : 'text'}
                                 required 
-                                placeholder="Confirm Password"
+                                placeholder="Konfirmasi Password"
                                 value={form.confirmPassword}
                                 onChange={(e) => {
                                     setForm(prev => ({

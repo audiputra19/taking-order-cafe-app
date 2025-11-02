@@ -1,6 +1,7 @@
 import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState } from "react";
 import { MdPrint } from "react-icons/md";
+import { BASE_URL_CUST } from "../components/BASE_URL";
 
 type Props = {};
 
@@ -154,7 +155,7 @@ export default function QRTableGenerator(_props: Props) {
                 <div className="print:hidden">
                   <QRCodeSVG
                     id={`qrcode-svg-${n}`}
-                    value={`http://192.168.200.21:5173/scan/${btoa(`meja-${n}`)}`}
+                    value={`${BASE_URL_CUST}/scan/${btoa(`meja-${n}`)}`}
                     size={size}
                     level="M"
                     includeMargin={false}
@@ -167,7 +168,7 @@ export default function QRTableGenerator(_props: Props) {
                 <div className="hidden print:block">
                   <QRCodeSVG
                     id={`qrcode-svg-print-${n}`}
-                    value={`http://192.168.200.21:5173/scan/${btoa(`meja-${n}`)}`}
+                    value={`${BASE_URL_CUST}/scan/${btoa(`meja-${n}`)}`}
                     size={size}
                     level="M"
                     includeMargin={false}

@@ -1,10 +1,9 @@
+import clsx from "clsx";
 import { useState, type FC } from "react";
-import Sidebar from "../components/sidebar";
 import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarLeftExpand } from "react-icons/tb";
 import { Outlet, useLocation } from "react-router-dom";
-import path from "path";
+import Sidebar from "../components/sidebar";
 import { ThemeSwitcher } from "../components/themeSwitcher";
-import clsx from "clsx";
 
 const MainLayout: FC = () => {
     const location = useLocation();
@@ -33,10 +32,10 @@ const MainLayout: FC = () => {
                 </div>
                 <div 
                     className={clsx(
-                        "flex-1 flex flex-col min-h-screen bg-base-100 transition-[margin] duration-300",
+                        "flex-1 flex flex-col min-h-screen bg-base-100 transition-[margin] duration-300 overflow-hidden",
                         collapsed ? "ml-[63px]" : "ml-[250px]"
                 )}>
-                    <div className="sticky top-0 p-3 bg-base-100 z-10 border-b border-base-300">
+                    <div className="sticky top-0 left-0 right-0 p-3 bg-base-100 z-20 border-b border-base-300">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
                                 <div 
@@ -55,7 +54,7 @@ const MainLayout: FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="m-5 rounded-lg">
+                    <div className="relative h-[calc(100vh-60px)] overflow-auto p-5">
                         <Outlet />
                     </div>
                 </div>

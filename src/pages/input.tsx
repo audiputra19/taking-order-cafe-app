@@ -1,5 +1,5 @@
 import { useEffect, useState, type FC } from "react";
-import { LuClipboardList, LuNotebookPen, LuUserPlus } from "react-icons/lu";
+import { LuClipboardList, LuClipboardX, LuNotebookPen, LuUserPlus } from "react-icons/lu";
 import { RiEdit2Line } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import ItemEdit from "../subPages/input/itemEdit";
@@ -9,6 +9,9 @@ import UserInput from "../subPages/input/userInput";
 import { usePostMeQuery } from "../services/apiAuth";
 import { UserList } from "../subPages/input/userList";
 import LoadingPage from "../components/loadingPage";
+import Discontinue from "../subPages/input/discontinue";
+import VoucherInput from "../subPages/input/voucherInput";
+import { TbSquarePercentage } from "react-icons/tb";
 
 const Input: FC = () => {
     const location = useLocation();
@@ -75,6 +78,21 @@ const Input: FC = () => {
                     </>
                 )}
 
+                <label 
+                    className="tab"
+                    onClick={() => {
+                        setActiveTab("discontinue");
+                        navigate('/input');
+                    }}
+                >
+                    <input type="radio" name="my_tabs_4" checked={activeTab === "discontinue"} readOnly />
+                    <LuClipboardX size={18} className="mr-2"/>
+                    Discontinue
+                </label>
+                <div className="tab-content bg-base-100 border-base-300 p-5">
+                    <Discontinue />
+                </div>
+
                 {user?.hak_akses === 1 && (
                     <>
                         <label 
@@ -108,6 +126,21 @@ const Input: FC = () => {
                         </div>
                     </>
                 )}
+
+                <label 
+                    className="tab"
+                    onClick={() => {
+                        setActiveTab("input-voucher");
+                        navigate('/input');
+                    }}
+                >
+                    <input type="radio" name="my_tabs_4" checked={activeTab === "input-voucher"} readOnly />
+                    <TbSquarePercentage size={18} className="mr-2"/>
+                    Voucher Input
+                </label>
+                <div className="tab-content bg-base-100 border-base-300 p-5">
+                    <VoucherInput />
+                </div>
             </div>
         </>
     )

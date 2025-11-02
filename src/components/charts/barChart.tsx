@@ -29,7 +29,7 @@ const BarChart: React.FC<CategoryBarChartProps> = ({
   label,
   height = 300,
 }) => {
-  const { labels, values, maxCategory } = useMemo(() => {
+  const { labels, values } = useMemo(() => {
     const labels = data.map((d) =>
       d.category.length > MAX_LABEL_LENGTH
         ? d.category.slice(0, MAX_LABEL_LENGTH) + "..."
@@ -37,12 +37,7 @@ const BarChart: React.FC<CategoryBarChartProps> = ({
     );
     const values = data.map((d) => d.qty);
 
-    const maxCategory = data.reduce(
-      (acc, cur) => (cur.qty > acc.qty ? cur : acc),
-      { category: "", qty: 0 }
-    );
-
-    return { labels, values, maxCategory };
+    return { labels, values };
   }, [data]);
 
   const chartData = {

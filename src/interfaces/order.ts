@@ -22,4 +22,6 @@ export interface GetOrderByIdResponse {
     harga: number;
     qty: number;
     created_at: string;
+    catatan: string;
+    tipe: string;
 }

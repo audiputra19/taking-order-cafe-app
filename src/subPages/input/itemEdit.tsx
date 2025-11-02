@@ -7,13 +7,14 @@ import { useAlert } from "../../contexts/alertContext";
 import type { CreateProductRequest } from "../../interfaces/product";
 import { useGetProductQuery, useUpdateProductMutation } from "../../services/apiProduct";
 import LoadingPage from "../../components/loadingPage";
+import { BASE_URL } from "../../components/BASE_URL";
 
 const ItemEdit: FC = () => {
     const [form, setForm] = useState<CreateProductRequest>({
         nama: '',
-        hpp: '' as unknown as number,
-        harga: '' as unknown as number,
-        kategori: '' as unknown as number,
+        hpp: 0,
+        harga: 0,
+        kategori: 0,
         deskripsi: '',
         file: undefined,
     });
@@ -39,7 +40,7 @@ const ItemEdit: FC = () => {
                 file: undefined,
             });
             if (productExist.image_path) {
-                setPreview(`http://localhost:3001${productExist.image_path}`);
+                setPreview(`${BASE_URL}${productExist.image_path}`);
             }
         }
     }, [productExist]);

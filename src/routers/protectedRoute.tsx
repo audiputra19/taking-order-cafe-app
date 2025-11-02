@@ -2,7 +2,7 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, type FC, type JSX } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store";
-import { clearToken } from "../store/authSLice";
+import { clearToken } from "../store/authSlice";
 
 interface TokenPayload {
     exp: number;

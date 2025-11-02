@@ -1,8 +1,7 @@
 import { BrowserRouter } from "react-router-dom"
-import Router from "./routers/router"
-import { AlertProvider } from "./contexts/alertContext"
 import Alert from "./components/alert"
-import LoadingPage from "./components/loadingPage"
+import { AlertProvider } from "./contexts/alertContext"
+import Router from "./routers/router"
 
 
 function App() {

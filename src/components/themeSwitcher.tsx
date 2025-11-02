@@ -1,4 +1,4 @@
-import { useState, useEffect, type FC } from "react";
+import { useEffect, type FC } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { toggleDarkMode } from "../store/darkModeSlice";
 

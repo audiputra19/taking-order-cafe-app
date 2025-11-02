@@ -50,7 +50,7 @@ export const Completed: FC = () => {
                         <th className="text-center">Tanggal</th>
                         <th className="text-center">No. Meja</th>
                         <th className="text-center">Total</th>
-                        <th className="text-center">Status Pembayaran</th>
+                        <th className="text-center">Status</th>
                         <th className="text-center">Proses</th>
                         <th></th>
                     </tr>
@@ -84,12 +84,12 @@ export const Completed: FC = () => {
                             <Fragment key={item.order_id}>
                                 <tr>
                                     <th>{i + 1}</th>
-                                    <td className="text-center">
+                                    <td className="text-center min-w-[230px]">
                                         <span className="border border-base-300 rounded-xl p-2 font-semibold">{item.order_id}</span>
                                     </td>
-                                    <td className="text-center">{moment(item.created_at).format("YYYY-MM-DD HH:mm:ss")}</td>
+                                    <td className="text-center min-w-[185px]">{moment(item.created_at).format("YYYY-MM-DD HH:mm:ss")}</td>
                                     <td className="text-center">{item.meja}</td>
-                                    <td className="text-right">Rp. {item.total.toLocaleString("id-ID")}</td>
+                                    <td className="text-right min-w-[135px]">Rp. {item.total.toLocaleString("id-ID")}</td>
                                     <td className="text-center">
                                         <span className="flex justify-center items-center gap-2">
                                             <div 
@@ -128,7 +128,7 @@ export const Completed: FC = () => {
                                     </td>
                                 </tr>
 
-                                <DetailRow show={openRow === item.order_id}>
+                                <DetailRow show={openRow === item.order_id} colSpan={8}>
                                     {isFetching ? (
                                         <div className="p-2 text-gray-500">Loading detail...</div>
                                     ) : getOrderDetail.length > 0 ? (
@@ -139,6 +139,8 @@ export const Completed: FC = () => {
                                                         <tr className="text-green-500">
                                                             <th className="text-center w-12"></th>
                                                             <th>Nama Produk</th>
+                                                            <th className="text-center">Catatan</th>
+                                                            <th className="text-center w-20">Varian</th>
                                                             <th className="text-center w-20">Qty</th>
                                                             <th className="text-right w-32">Harga</th>
                                                             <th className="text-right w-32">Subtotal</th>
@@ -148,7 +150,9 @@ export const Completed: FC = () => {
                                                         {getOrderDetail.map((d, idx) => (
                                                         <tr key={`${d.order_id}-${idx}`}>
                                                             <td className="text-center">{idx + 1}</td>
-                                                            <td className="font-medium">{d.nama}</td>
+                                                            <td className="font-semibold">{d.nama}</td>
+                                                            <td className="text-left">{d.catatan ? d.catatan : '-'}</td>
+                                                            <td className="text-center">{d.tipe ? d.tipe : '-'}</td>
                                                             <td className="text-center">{d.qty}</td>
                                                             <td className="text-right">{Number(d.harga).toLocaleString("id-ID")}</td>
                                                             <td className="text-right">

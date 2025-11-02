@@ -14,6 +14,13 @@ export const apiProduct = createApi({
             }),
             providesTags: ["Product"],
         }),
+        getProductDiscontinue: build.query<GetProductResponse[], void>({
+            query: () => ({
+                url: 'get-product-discontinue',
+                method: 'GET'
+            }),
+            providesTags: ["Product"],
+        }),
         createProduct: build.mutation<CreateProductResponse, CreateProductRequest>({
             query: (data) => {
                 const formData = new FormData();
@@ -59,8 +66,18 @@ export const apiProduct = createApi({
                 method: 'PUT'
             }),
             invalidatesTags: ["Product"],
-        })
+        }),
+        activateProduct: build.mutation<DiscontinueProductResponse, string>({
+            query: (id) => ({
+                url: `activate-product/${id}`,
+                method: 'PUT'
+            }),
+            invalidatesTags: ["Product"],
+        }),
     })
 })
 
-export const { useGetProductQuery, useCreateProductMutation, useUpdateProductMutation, useDiscontinueProductMutation} = apiProduct;
+export const { 
+    useGetProductQuery, useGetProductDiscontinueQuery, useCreateProductMutation, useUpdateProductMutation, 
+    useDiscontinueProductMutation, useActivateProductMutation
+} = apiProduct;

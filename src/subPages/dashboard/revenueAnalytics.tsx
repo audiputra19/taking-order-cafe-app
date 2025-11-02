@@ -15,8 +15,8 @@ interface RevenueAnalyticsProps {
 
 export const RevenueAnalytics: FC<RevenueAnalyticsProps> = ({ selectPeriode }) => {
     const [totalRevenue, { data: getTotalRevenue, isLoading: isLoadingTotalRevenue }] = useTotalRevenueMutation();
-    const [totalProfit, { data: getTotalProfit, isLoading: isLoadingTotalProfit }] = useTotalProfitMutation();
-    const [averageOrderValue, { data: getAverageOrderValue, isLoading: isLoadingAverageOrderValue }] = useAverageOrderValueMutation();
+    const [totalProfit, { data: getTotalProfit }] = useTotalProfitMutation();
+    const [averageOrderValue, { data: getAverageOrderValue }] = useAverageOrderValueMutation();
     const [revenueByProduct, { data: getRevenueByProduct }] = useRevenueByProductMutation();
     const [revenueByCategory, { data: getRevenueByCategory }] = useRevenueByCategoryMutation();
     const { data: getRevenueTrend } = useRevenueTrendQuery();

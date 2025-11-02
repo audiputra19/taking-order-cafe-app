@@ -4,12 +4,15 @@ import { useParams } from "react-router-dom";
 import { MdPrint } from "react-icons/md";
 import moment from 'moment';
 import "moment/dist/locale/id";
+import { useGetCompanyProfileQuery } from "../services/apiProfile";
+import { BASE_URL } from "../components/BASE_URL";
 
 moment.locale("id");
 
 const PrintOut: FC = () => {
     const { id = "" } = useParams();
     const { data: getOrderDetail = [] } = useGetOrderByIdQuery(id);
+    const { data: getCompanyProfile } = useGetCompanyProfileQuery();
     let totalAll = 0;
 
     const handlePrint = () => {
@@ -32,7 +35,13 @@ const PrintOut: FC = () => {
                             </p>
                         </div>
                         <div className="flex justify-center mt-10">
-                            <p className="text-xl font-bold">Your receipt is here</p>
+                            <div className="flex flex-col justify-center items-center gap-3">
+                                <img 
+                                    src={`${BASE_URL}${getCompanyProfile?.image_path}`}
+                                    className="w-28 rounded-full"
+                                />    
+                                <p className="text-xl font-bold">Your receipt is here</p>
+                            </div>
                         </div>
                         <div className="mt-10">
                             <p className="font-semibold">Payment Summary</p>

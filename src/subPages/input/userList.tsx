@@ -1,17 +1,14 @@
 import type { FC } from "react";
-import { MdOutlineEdit } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import { useAlert } from "../../contexts/alertContext";
-import { useDeleteUserMutation, useGetUserQuery } from "../../services/apiUser";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import LoadingPage from "../../components/loadingPage";
+import { useAlert } from "../../contexts/alertContext";
+import { useDeleteUserMutation, useGetUserQuery } from "../../services/apiUser";
 
 export const UserList: FC = () => {
     const {data: getUser, isLoading: isLoadingUser} = useGetUserQuery(undefined, {
         refetchOnMountOrArgChange: true
     });
     const [deleteUser, {isLoading: isLoadingDelUser}] = useDeleteUserMutation();
-    const navigate = useNavigate();
     const { showAlert } = useAlert();
 
     const handleDelete = async (username: string) => {

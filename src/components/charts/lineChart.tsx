@@ -86,34 +86,34 @@ function getStartEnd(range: RangeType, startDate?: string, endDate?: string) {
   return { start: s, end: e };
 }
 
-function bucketPerWeek(orders: Order[], start: Date, end: Date) {
-  const buckets: { label: string; start: Date; end: Date; total: number }[] = [];
-  let curStart = new Date(start);
-  let idx = 1;
-  while (curStart <= end) {
-    const curEnd = endOfDay(addDays(curStart, 6));
-    const actualEnd = curEnd > end ? end : curEnd;
-    buckets.push({
-      label: `Week ${idx}`,
-      start: new Date(curStart),
-      end: new Date(actualEnd),
-      total: 0,
-    });
-    curStart = addDays(curEnd, 1);
-    idx += 1;
-  }
+// function bucketPerWeek(orders: Order[], start: Date, end: Date) {
+//   const buckets: { label: string; start: Date; end: Date; total: number }[] = [];
+//   let curStart = new Date(start);
+//   let idx = 1;
+//   while (curStart <= end) {
+//     const curEnd = endOfDay(addDays(curStart, 6));
+//     const actualEnd = curEnd > end ? end : curEnd;
+//     buckets.push({
+//       label: `Week ${idx}`,
+//       start: new Date(curStart),
+//       end: new Date(actualEnd),
+//       total: 0,
+//     });
+//     curStart = addDays(curEnd, 1);
+//     idx += 1;
+//   }
 
-  for (const o of orders) {
-    const t = new Date(o.createdAt);
-    for (const b of buckets) {
-      if (t >= b.start && t <= b.end) {
-        b.total += o.qty;
-        break;
-      }
-    }
-  }
-  return buckets;
-}
+//   for (const o of orders) {
+//     const t = new Date(o.createdAt);
+//     for (const b of buckets) {
+//       if (t >= b.start && t <= b.end) {
+//         b.total += o.qty;
+//         break;
+//       }
+//     }
+//   }
+//   return buckets;
+// }
 
 function bucketPerDay(orders: Order[], start: Date, end: Date) {
   const buckets: { label: string; date: Date; total: number }[] = [];
@@ -215,7 +215,7 @@ const LineChart: React.FC<OrderBarChartProps> = ({
 }) => {
   const { start, end } = getStartEnd(range, startDate, endDate);
 
-  const { labels, data, maxPeriod } = useMemo(() => {
+  const { labels, data } = useMemo(() => {
     const filtered = orders.filter((o) => {
       const t = new Date(o.createdAt);
       return t >= start && t <= end;
@@ -233,15 +233,9 @@ const LineChart: React.FC<OrderBarChartProps> = ({
       buckets = bucketPerMonth(filtered, start, end);
     }
 
-    const max = buckets.reduce(
-      (acc, cur) => (cur.total > acc.total ? cur : acc),
-      { label: "", total: 0 }
-    );
-
     return {
       labels: buckets.map((b) => b.label),
       data: buckets.map((b) => b.total),
-      maxPeriod: max,
     };
   }, [orders, range, start.toISOString(), end.toISOString()]);
 

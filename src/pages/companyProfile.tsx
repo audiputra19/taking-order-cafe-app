@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FC } from "react";
-import type { CreateProductRequest } from "../interfaces/product";
 import { MdChevronRight, MdImage } from "react-icons/md";
-import { useCreateCompanyProfileMutation, useGetCompanyProfileQuery } from "../services/apiProfile";
+import { BASE_URL } from "../components/BASE_URL";
 import { useAlert } from "../contexts/alertContext";
+import { useCreateCompanyProfileMutation, useGetCompanyProfileQuery } from "../services/apiProfile";
 
 interface CompanyForm {
     name: string;
@@ -41,7 +41,7 @@ const CompanyProfile: FC = () => {
         });
 
         if (getCompanyProfile.image_path) {
-            setPreview(`http://localhost:3001${getCompanyProfile.image_path}`);
+            setPreview(`${BASE_URL}${getCompanyProfile.image_path}`);
         }
     }
     }, [getCompanyProfile]);

@@ -9,6 +9,7 @@ import { useAppDispatch } from "../store";
 import { clearToken } from "../store/authSlice";
 import { usePostMeQuery } from "../services/apiAuth";
 import { useGetCompanyProfileQuery } from "../services/apiProfile";
+import { BASE_URL } from "./BASE_URL";
 
 interface SidebarProps {
     pathname: string;
@@ -124,7 +125,7 @@ const Sidebar: FC<SidebarProps> = ({ pathname, collapsed }) => {
                             {getCompanyProfile ? (
                                 <div className="w-9 h-9">
                                     <img 
-                                        src={`http://localhost:3001${getCompanyProfile.image_path}`}
+                                        src={`${BASE_URL}${getCompanyProfile.image_path}`}
                                         alt={getCompanyProfile.image_title} 
                                         className="rounded"
                                     />

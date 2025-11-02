@@ -2,7 +2,7 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "../store";
 
 export const baseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:3001/'
+    baseUrl: 'http://localhost:3001'
 })
 
 export const baseQueryAuth = fetchBaseQuery({

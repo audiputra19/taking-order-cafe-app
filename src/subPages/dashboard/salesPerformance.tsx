@@ -16,8 +16,11 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
     const [totalOrder, { data: getTotalOrder, isLoading: isLoadingGetTotalOrder }] = useTotalOrderMutation();
     const [orderCanceled, { data: getOrderCanceled, isLoading: isLoadingGetOrderCanceled }] = useOrderCanceledMutation();
     const [averageOrder, { data: getAverageOrder, isLoading: isLoadingGetAverageOrder }] = useAverageOrderMutation();
-    const [categoryPerformance, { data: getCategoryPerformance, isLoading: isLoadingGetCategoryPerformance }] = useCategoryPerformanceMutation();
-    const { data: getOrderTrend } = useOrderTrendQuery();
+    const [categoryPerformance, { data: getCategoryPerformance }] = useCategoryPerformanceMutation();
+    const { data: getOrderTrend } = useOrderTrendQuery(undefined, {
+        refetchOnReconnect: true,
+        refetchOnFocus: true
+    });
     const [bestSellingProd, { data: getBestSellingProd }] = useBestSellingProductsMutation();
     const [lowestSellingProd, { data: getLowestSellingProd }] = useLowestSellingProductsMutation();
     const [averageFulfillmentTime, { data: getAverageFulFillmentTime, isLoading: isLoadingGetAverageFulFillmentTime }] = useAverageFulfillmentTimeMutation();

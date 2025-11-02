@@ -10,9 +10,9 @@ import LoadingPage from "../../components/loadingPage";
 const ItemInput: FC = () => {
     const [form, setForm] = useState<CreateProductRequest>({
         nama: '',
-        hpp: '' as unknown as number,
-        harga: '' as unknown as number,
-        kategori: '' as unknown as number,
+        hpp: 0,
+        harga: 0,
+        kategori: 0,
         deskripsi: '',
         file: undefined,
     });
