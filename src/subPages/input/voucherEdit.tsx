@@ -1,27 +1,54 @@
 import clsx from "clsx";
-import { useRef, useState, type FC } from "react";
+import moment from "moment";
+import { useEffect, useRef, useState, type FC } from "react";
 import { LuTicketPercent } from "react-icons/lu";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LoadingPage from "../../components/loadingPage";
 import { useAlert } from "../../contexts/alertContext";
 import type { CreateVoucherRequest } from "../../interfaces/voucher";
-import { useCreateVoucherMutation } from "../../services/apiVoucher";
+import { useGetVoucherQuery, useUpdateVoucherMutation } from "../../services/apiVoucher";
 
-const VoucherInput: FC = () => {
+const VoucherEdit: FC = () => {
+    const { id } = useParams();
     const [form, setForm] = useState<CreateVoucherRequest>({
         nama: '',
         min_belanja: 0,
         persen: 0,
         due_date: '',
     });
-    const [createVoucher, {isLoading: isLoadingCreateVoucher}] = useCreateVoucherMutation();
+    const [updateVoucher, {isLoading: isLoadingUpdateVoucher}] = useUpdateVoucherMutation();
+    const {data: getVoucher} = useGetVoucherQuery(undefined, {
+        refetchOnMountOrArgChange: true
+    });
+    const voucherExist = getVoucher?.find(v => v.id_voucher === id);
     const { showAlert } = useAlert();
     const navigate = useNavigate();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+    useEffect(() => {
+        if(voucherExist) {
+            setForm({
+                nama: voucherExist.nama,
+                min_belanja: voucherExist.min_belanja,
+                persen: voucherExist.persen,
+                due_date: moment(voucherExist.due_date).format("YYYY-MM-DD")
+            });
+        }
+    }, [voucherExist]);
+
     const handleSave = async () => {
         try {
-            const res = await createVoucher(form).unwrap();
+            if (!id) {
+                showAlert("ID voucher tidak ditemukan");
+                return;
+            }
+
+            const res = await updateVoucher({
+                data: {
+                    ...form,
+                    id_voucher: id
+                }
+            }).unwrap();
             showAlert(res.message);
             setForm({
                 nama: '',
@@ -44,7 +71,7 @@ const VoucherInput: FC = () => {
 
     return (
         <>
-            {isLoadingCreateVoucher && <LoadingPage /> }
+            {isLoadingUpdateVoucher && <LoadingPage /> }
             <div className="flex justify-center">
                 <div className="flex flex-col gap-5">
                     <div className="grid grid-flow-col grid-rows-2 gap-5">
@@ -150,4 +177,4 @@ const VoucherInput: FC = () => {
     )
 }
 
-export default VoucherInput;
+export default VoucherEdit;

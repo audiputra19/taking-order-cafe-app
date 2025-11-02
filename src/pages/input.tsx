@@ -1,23 +1,26 @@
 import { useEffect, useState, type FC } from "react";
 import { LuClipboardList, LuClipboardX, LuNotebookPen, LuUserPlus } from "react-icons/lu";
 import { RiEdit2Line } from "react-icons/ri";
+import { TbSquarePercentage } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router-dom";
+import LoadingPage from "../components/loadingPage";
+import { usePostMeQuery } from "../services/apiAuth";
+import Discontinue from "../subPages/input/discontinue";
 import ItemEdit from "../subPages/input/itemEdit";
 import ItemInput from "../subPages/input/itemInput";
 import { ItemList } from "../subPages/input/itemList";
 import UserInput from "../subPages/input/userInput";
-import { usePostMeQuery } from "../services/apiAuth";
 import { UserList } from "../subPages/input/userList";
-import LoadingPage from "../components/loadingPage";
-import Discontinue from "../subPages/input/discontinue";
+import VoucherEdit from "../subPages/input/voucherEdit";
 import VoucherInput from "../subPages/input/voucherInput";
-import { TbSquarePercentage } from "react-icons/tb";
+import { VoucherList } from "../subPages/input/voucherList";
 
 const Input: FC = () => {
     const location = useLocation();
     const path = location.pathname;
     const state = location.state?.from;
-    const isEditPage = path.startsWith("/edit-input")
+    const isEditInput = path.startsWith("/edit-input")
+    const isEditVoucher = path.startsWith("/edit-voucher")
     const [activeTab, setActiveTab] = useState<string>("input-item");
     const navigate = useNavigate();
     const { data: MeData, isLoading: isLoadingMe } = usePostMeQuery();
@@ -28,6 +31,8 @@ const Input: FC = () => {
             setActiveTab("list-item");
         } else if(state === "user-edit") {
             setActiveTab("list-user");
+        } else if(state === "voucher-edit") {
+            setActiveTab("list-voucher");
         }
     }, [state]);
 
@@ -65,7 +70,7 @@ const Input: FC = () => {
                     <ItemList />
                 </div>
 
-                {isEditPage && (
+                {isEditInput && (
                     <>
                         <label className="tab">
                             <input type="radio" name="my_tabs_4" defaultChecked />
@@ -124,23 +129,51 @@ const Input: FC = () => {
                         <div className="tab-content bg-base-100 border-base-300 p-5">
                             <UserList />
                         </div>
+
+                        <label 
+                            className="tab"
+                            onClick={() => {
+                                setActiveTab("input-voucher");
+                                navigate('/input');
+                            }}
+                        >
+                            <input type="radio" name="my_tabs_4" checked={activeTab === "input-voucher"} readOnly />
+                            <TbSquarePercentage size={18} className="mr-2"/>
+                            Voc Input
+                        </label>
+                        <div className="tab-content bg-base-100 border-base-300 p-5">
+                            <VoucherInput />
+                        </div>
+
+                        <label 
+                            className="tab"
+                            onClick={() => {
+                                setActiveTab("list-voucher");
+                                navigate('/input');
+                            }}
+                        >
+                            <input type="radio" name="my_tabs_4" checked={activeTab === "list-voucher"} readOnly />
+                            <LuClipboardList size={18} className="mr-2"/>
+                            Voc List
+                        </label>
+                        <div className="tab-content bg-base-100 border-base-300 p-5">
+                            <VoucherList />
+                        </div>
                     </>
                 )}
 
-                <label 
-                    className="tab"
-                    onClick={() => {
-                        setActiveTab("input-voucher");
-                        navigate('/input');
-                    }}
-                >
-                    <input type="radio" name="my_tabs_4" checked={activeTab === "input-voucher"} readOnly />
-                    <TbSquarePercentage size={18} className="mr-2"/>
-                    Voucher Input
-                </label>
-                <div className="tab-content bg-base-100 border-base-300 p-5">
-                    <VoucherInput />
-                </div>
+                {isEditVoucher && (
+                    <>
+                        <label className="tab">
+                            <input type="radio" name="my_tabs_4" defaultChecked />
+                            <RiEdit2Line size={18} className="mr-2"/>
+                            Voc Edit
+                        </label>
+                        <div className="tab-content bg-base-100 border-base-300 p-5">
+                            <VoucherEdit />
+                        </div>
+                    </>
+                )}
             </div>
         </>
     )

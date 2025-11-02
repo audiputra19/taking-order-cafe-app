@@ -42,7 +42,11 @@ const Router: FC = () => {
                 {
                     path: '/company-profile',
                     element: <CompanyProfile />
-                }
+                },
+                {
+                    path: '/edit-voucher/:id',
+                    element: <Input />
+                },
             ]
         },
         {
