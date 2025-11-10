@@ -136,7 +136,7 @@ export const Completed: FC = () => {
                                             <div className="overflow-x-auto border-y border-r border-base-300">
                                                 <table className="table">
                                                     <thead>
-                                                        <tr className="text-green-500">
+                                                        <tr>
                                                             <th className="text-center w-12"></th>
                                                             <th>Nama Produk</th>
                                                             <th className="text-center">Catatan</th>

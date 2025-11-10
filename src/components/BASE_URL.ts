@@ -1,2 +1,2 @@
-export const BASE_URL = 'http://localhost:3001';
-export const BASE_URL_CUST = 'http://localhost:3002';
+export const BASE_URL = import.meta.env.VITE_TAKING_ORDER_CAFE_BASE_URL;
+export const BASE_URL_CUST = import.meta.env.VITE_TAKING_ORDER_CAFE_BASE_URL_CUST;

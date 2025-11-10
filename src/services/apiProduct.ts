@@ -25,6 +25,7 @@ export const apiProduct = createApi({
             query: (data) => {
                 const formData = new FormData();
                 formData.append("nama", data.nama);
+                formData.append("hpp", String(data.hpp));
                 formData.append("harga", String(data.harga));
                 formData.append("kategori", String(data.kategori));
                 formData.append("deskripsi", data.deskripsi);

@@ -45,15 +45,18 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
         const curr = current || 0;
         const prev = previous || 0;
 
-        if (prev > 0) {
-            const percent = ((curr - prev) / prev) * 100;
-            return `${percent >= 0 ? "+" : ""}${percent.toFixed(2)}%`;
-        } else if (curr > 0) {
-            return "+100%";
-        } else {
-            return "0%";
+        if (prev === 0 && curr > 0) return "+100%";
+        if (prev === 0 && curr === 0) return "0%";
+
+        let percent = ((curr - prev) / prev) * 100;
+
+        // Kalau lebih dari 100, skala dikompresi (bagi 10)
+        if (percent > 100) {
+            percent = percent / 10;
         }
-    }
+
+        return `${percent >= 0 ? "+" : ""}${percent.toFixed(2)}%`;
+    };
 
     const renderTrendIcon = (current: number, previous: number) => {
         const curr = current ?? 0;
