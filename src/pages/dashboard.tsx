@@ -6,6 +6,7 @@ import { RevenueAnalytics } from "../subPages/dashboard/revenueAnalytics";
 const Dashboard: FC = () => {
     const [selectFilter, setSelectFilter] = useState<number>(1);
     const [selectPeriode, setSelectPeriode] = useState<number>(1);
+    const filter = selectFilter === 1 ? "Sales Performance" : "Revenue Analytics"
 
     return (
         <div className="w-full">
@@ -18,7 +19,7 @@ const Dashboard: FC = () => {
                             className="flex items-center gap-3 text-sm font-semibold border border-base-300 px-3 py-2 rounded cursor-pointer"
                         >
                             <LuSettings2 size={18} className="text-green-500"/>
-                            Filters
+                            {filter}
                         </div>
                         <ul tabIndex={1} className="dropdown-content menu bg-base-100 border border-base-300 shadow-lg z-1 w-52 p-2 mt-2 rounded">
                             <li>

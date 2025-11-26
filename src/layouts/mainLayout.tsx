@@ -27,17 +27,17 @@ const MainLayout: FC = () => {
             <div className="flex">
                 <div 
                     className={clsx(
-                        "fixed top-0 left-0 h-screen transition-all duration-300 bg-base-200 z-[20]", 
+                        "fixed top-0 left-0 h-screen transition-all duration-300 bg-base-200 z-[20] sidebar-print-hide", 
                         collapsed ? 'w-[63px]' : 'w-[250px]'
                 )}>
                     <Sidebar pathname={path} collapsed={collapsed}/>
                 </div>
                 <div 
                     className={clsx(
-                        "flex-1 flex flex-col min-h-screen bg-base-100 transition-[margin] duration-300 overflow-hidden",
+                        "flex-1 flex flex-col min-h-screen bg-base-100 transition-[margin] duration-300 overflow-hidden content-print-full",
                         collapsed ? "ml-[63px]" : "ml-[250px]"
                 )}>
-                    <div className="sticky top-0 left-0 right-0 p-3 bg-base-100 z-20 border-b border-base-300">
+                    <div className="sticky top-0 left-0 right-0 p-3 bg-base-100 z-20 border-b border-base-300 no-print">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
                                 <div 

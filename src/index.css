@@ -77,3 +77,20 @@
 body {
   font-family: 'Inter', sans-serif;
 }
+
+@media print {
+    /* Sembunyikan sidebar */
+    .sidebar-print-hide {
+        display: none !important;
+    }
+
+    /* Reset margin konten agar full width */
+    .content-print-full {
+        margin-left: 0 !important;
+    }
+
+    /* Hilangkan topbar juga jika perlu */
+    .no-print {
+        display: none !important;
+    }
+}

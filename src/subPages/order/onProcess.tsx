@@ -25,6 +25,7 @@ export const OnProcess: FC = () => {
     const [finish, {isLoading: isLoadingFinish}] = useFinishOrderMutation();
     const [openRow, setOpenRow] = useState<string | null>(null);
     const [fetchDetail, { data: getOrderDetail = [], isFetching }] = useLazyGetOrderByIdQuery();
+    const subtotal = getOrderDetail.reduce((sum, d) => sum + d.qty * d.harga, 0);
 
     useEffect(() => {
         if(isError) {
@@ -107,7 +108,7 @@ export const OnProcess: FC = () => {
             isLoadingAccByDapur || isLoadingReady || isLoadingFinish && (
                 <LoadingPage />
             )}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-[435px]">
                 <table className="table table-zebra">
                     <thead>
                         <tr>
@@ -158,8 +159,8 @@ export const OnProcess: FC = () => {
                                 <Fragment key={item.order_id}>
 
                                     <tr>
-                                        <th>{i + 1}</th>
-                                        <td>
+                                        <th className="text-center">{i + 1}</th>
+                                        <td className="flex justify-center items-center">
                                             <div 
                                                 className={clsx("w-7 h-7 border-2 flex justify-center items-center rounded-full cursor-pointer",
                                                     openRow === item.order_id
@@ -177,9 +178,7 @@ export const OnProcess: FC = () => {
                                                 />
                                             </div>
                                         </td>
-                                        <td className="text-center min-w-[230px]">
-                                            <span className="border border-base-300 rounded-xl p-2 font-semibold">{item.order_id}</span>
-                                        </td>
+                                        <td className="text-center min-w-[230px]">{item.order_id}</td>
                                         <td className="text-center min-w-[185px]">{moment(item.created_at).format("YYYY-MM-DD HH:mm:ss")}</td>
                                         <td className="text-center">{item.meja}</td>
                                         <td className="text-right min-w-[135px]">Rp. {item.total.toLocaleString("id-ID")}</td>
@@ -344,7 +343,7 @@ export const OnProcess: FC = () => {
                                                 <div className="overflow-x-auto border-y border-r border-base-300">
                                                     <table className="table">
                                                         <thead>
-                                                            <tr className="text-green-500">
+                                                            <tr>
                                                                 <th className="text-center w-12"></th>
                                                                 <th>Nama Produk</th>
                                                                 <th className="text-center">Catatan</th>
@@ -369,17 +368,39 @@ export const OnProcess: FC = () => {
                                                             </tr>
                                                             ))}
                                                         </tbody>
-                                                        <tfoot>
-                                                            <tr className="font-semibold text-green-500">
-                                                                <td colSpan={6} className="text-right pr-4">Total</td>
-                                                                <td className="text-right">
-                                                                    {getOrderDetail
-                                                                    .reduce((sum, d) => sum + d.qty * d.harga, 0)
-                                                                    .toLocaleString("id-ID")}
-                                                                </td>
-                                                            </tr>
-                                                        </tfoot>
                                                     </table>
+                                                    <div className="p-4">
+                                                        {/* SUBTOTAL */}
+                                                        <div className="flex justify-end items-center mb-3">
+                                                            <div className="font-semibold text-gray-500">Subtotal</div>
+                                                            <div className="font-semibold text-end min-w-[100px]">
+                                                                {subtotal.toLocaleString("id-ID")}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* VOUCHER (JIKA ADA) */}
+                                                        {item.voucher && (
+                                                            <div className="flex justify-end items-center mb-3">
+                                                                <div className="text-gray-500 text-sm">
+                                                                    Voucher {item.voucher} ({item.diskon}%)
+                                                                </div>
+                                                                <div className="text-sm text-red-500 text-end min-w-[100px]">
+                                                                    -{((subtotal * item.diskon) / 100).toLocaleString("id-ID")}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {/* TOTAL SETELAH DISKON */}
+                                                        <div className="flex justify-end items-center mt-2 pt-3 border-t border-base-300">
+                                                            <div className="font-bold text-green-600">Total</div>
+                                                            <div className="font-bold text-green-600 text-end min-w-[100px]">
+                                                                {(
+                                                                    subtotal -
+                                                                    (item.voucher ? (subtotal * item.diskon) / 100 : 0)
+                                                                ).toLocaleString("id-ID")}
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ) : (

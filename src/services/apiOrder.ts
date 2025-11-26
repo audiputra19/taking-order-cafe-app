@@ -14,9 +14,9 @@ export const apiOrder = createApi({
             }),
             providesTags: ["Order"]
         }),
-        getOrderComplete: builder.query<GetOrder[], void>({
-            query: () => ({
-                url: 'order/get-order-complete',
+        getOrderComplete: builder.query<GetOrder[], { year: number, month: number, process: string }>({
+            query: (data) => ({
+                url: `order/get-order-complete/${data.year}/${data.month}/${data.process}`,
                 method: 'GET'
             }),
             providesTags: ["Order"]

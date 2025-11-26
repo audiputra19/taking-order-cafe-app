@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useGetOrderByIdQuery } from "../services/apiOrder";
+import { useGetOrderByIdQuery, useGetOrderCompleteQuery } from "../services/apiOrder";
 import { useParams } from "react-router-dom";
 import { MdPrint } from "react-icons/md";
 import moment from 'moment';
@@ -11,9 +11,23 @@ moment.locale("id");
 
 const PrintOut: FC = () => {
     const { id = "" } = useParams();
+    const { data: getOrder } = useGetOrderCompleteQuery(undefined, {
+        refetchOnFocus: true,
+        refetchOnReconnect: true,
+    });
+    const order = getOrder?.find(o => o.order_id === id);
     const { data: getOrderDetail = [] } = useGetOrderByIdQuery(id);
     const { data: getCompanyProfile } = useGetCompanyProfileQuery();
-    let totalAll = 0;
+    const subtotal = getOrderDetail.reduce(
+        (sum, item) => sum + item.qty * item.harga,
+        0
+    );
+
+    const voucherAmount = order?.voucher
+        ? (subtotal * order.diskon) / 100
+        : 0;
+
+    const grandTotal = subtotal - voucherAmount;
 
     const handlePrint = () => {
         window.print()
@@ -55,7 +69,6 @@ const PrintOut: FC = () => {
                                 </thead>
                                 <tbody>
                                     {getOrderDetail.map(item => {
-                                        totalAll += item.qty * item.harga;
 
                                         return (
                                             <tr 
@@ -70,13 +83,23 @@ const PrintOut: FC = () => {
                                     })}
                                 </tbody>
                             </table>
+                            {order?.voucher && (
+                                <div className="flex justify-between items-center mb-3">
+                                    <div className="text-sm">
+                                        Voucher {order.voucher} ({order.diskon}%)
+                                    </div>
+                                    <div className="text-sm text-red-500">
+                                        -{voucherAmount.toLocaleString("id-ID")}
+                                    </div>
+                                </div>
+                            )}
                             <div className="mt-5">
                                 <div className="border border-dashed w-full"></div>
                             </div>
                             <div className="mt-5">
                                 <div className="flex justify-between">
                                     <p className="font-bold">TOTAL</p>
-                                    <p className="font-bold text-green-500">{totalAll.toLocaleString("id-ID")}</p>
+                                    <p className="font-bold text-green-500">{grandTotal.toLocaleString("id-ID")}</p>
                                 </div>
                             </div>
                         </div>
@@ -128,10 +151,10 @@ const PrintOut: FC = () => {
                         visibility: visible;
                     }
                     #receipt {
-                        position: absolute;
+                        position: static;
                         left: 0;
                         top: 0;
-                        width: 100%; /* biar full page saat print */
+                        width: 100%;
                     }
                 }
             `}</style>

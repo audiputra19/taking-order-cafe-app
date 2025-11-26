@@ -6,6 +6,8 @@ export interface GetOrder {
     proses: string;
     created_at: string;
     metode: string;
+    diskon: number;
+    voucher: string;
 }
 
 export interface OrderRequest {

@@ -1,11 +1,11 @@
+import moment from "moment";
 import type { FC } from "react";
-import { MdOutlineDoDisturbOn, MdOutlineEdit } from "react-icons/md";
+import { MdOutlineEdit } from "react-icons/md";
+import { RiDeleteBin5Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import LoadingPage from "../../components/loadingPage";
 import { useAlert } from "../../contexts/alertContext";
 import { useDeleteVoucherMutation, useGetVoucherQuery } from "../../services/apiVoucher";
-import moment from "moment";
-import { RiDeleteBin5Line } from "react-icons/ri";
 
 export const VoucherList: FC = () => {
     const {data: getVoucher, isLoading: isLoadingVoucher} = useGetVoucherQuery(undefined, {
@@ -28,7 +28,7 @@ export const VoucherList: FC = () => {
     // }
 
     const handleDeleteVoucher = async (id: string) => {
-        const confirm = window.confirm("Apakah kamu yakin ingin menghapus produk ini?");
+        const confirm = window.confirm("Apakah kamu yakin ingin menghapus voucher ini?");
         if (!confirm) return;
 
         try {
@@ -75,7 +75,7 @@ export const VoucherList: FC = () => {
                                                     <MdOutlineEdit size={20}/>
                                                 </div>
                                             </div>
-                                            <div className="tooltip tooltip-left" data-tip="Discontinue">
+                                            <div className="tooltip tooltip-left" data-tip="Hapus">
                                                 <div
                                                     className="cursor-pointer"
                                                     onClick={() => handleDeleteVoucher(item.id_voucher)}
