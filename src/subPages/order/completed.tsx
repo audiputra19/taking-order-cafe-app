@@ -46,6 +46,7 @@ export const Completed: FC = () => {
     const [openRow, setOpenRow] = useState<string | null>(null);
     const navigate = useNavigate();
     const subtotal = getOrderDetail.reduce((sum, d) => sum + d.qty * d.harga, 0);
+    const grandTotal = getOrder?.reduce((sum, x) => sum + x.total, 0) ?? 0;
 
     useEffect(() => {
         socket.on("order:update", () => {
@@ -136,13 +137,33 @@ export const Completed: FC = () => {
                 <div className="flex items-center gap-3">
                     <button
                         className="btn btn-sm bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded border-none"
-                        onClick={() => exportOrdersToExcel(getOrder ?? [], fetchDetail)}
+                        onClick={() =>
+                            exportOrdersToExcel(
+                                getOrder ?? [],
+                                fetchDetail,
+                                {
+                                    year: selectedYear,
+                                    month: selectedMonth,
+                                    status: selectedProcess
+                                }
+                            )
+                        }
                     >
                         <RiFileExcel2Line size={17}/>Export Excel
                     </button>
                     <button
                         className="btn btn-sm bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded border-none"
-                        onClick={() => exportOrdersToPDF(getOrder ?? [], fetchDetail)}
+                        onClick={() => 
+                            exportOrdersToPDF(
+                                getOrder ?? [],
+                                fetchDetail,
+                                {
+                                    year: selectedYear,
+                                    month: selectedMonth,
+                                    status: selectedProcess
+                                }
+                            )
+                        }
                     >
                         <RiFilePdf2Line size={17}/>Export Pdf
                     </button>
@@ -329,6 +350,15 @@ export const Completed: FC = () => {
                         </tr>
                     )}
                     </tbody>
+                    <tfoot className="sticky bottom-0 bg-base-100">
+                        <tr>
+                            <th colSpan={5} className="text-right font-bold">Total</th>
+                            <th className="text-right font-bold">
+                                Rp. {grandTotal.toLocaleString("id-ID")}
+                            </th>
+                            <th colSpan={2}></th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </>

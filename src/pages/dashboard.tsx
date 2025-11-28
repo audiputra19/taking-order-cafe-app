@@ -49,10 +49,10 @@ const Dashboard: FC = () => {
                         >
                             <LuCalendar size={18} className="text-green-500"/>
                             {(selectPeriode === 1) 
-                            ? "Last 30 days" 
+                            ? "Last Months" 
                             : (selectPeriode === 2) 
-                            ? "Last 3 month" 
-                            : "Year to day"}
+                            ? "Last 3 Months" 
+                            : "Last 12 Months"}
                         </div>
                         <ul tabIndex={1} className="dropdown-content menu bg-base-100 border border-base-300 shadow-lg z-1 w-52 p-2 mt-2 rounded">
                             <li>
@@ -61,7 +61,7 @@ const Dashboard: FC = () => {
                                         setSelectPeriode(1);
                                         (document.activeElement as HTMLElement)?.blur();
                                     }}
-                                >Last 30 days
+                                >Last Month
                                 </a>
                             </li>
                             <li>
@@ -70,7 +70,7 @@ const Dashboard: FC = () => {
                                         setSelectPeriode(2);
                                         (document.activeElement as HTMLElement)?.blur();
                                     }}
-                                >Last 3 month
+                                >Last 3 Months
                                 </a>
                             </li>
                             <li>
@@ -79,7 +79,7 @@ const Dashboard: FC = () => {
                                         setSelectPeriode(3);
                                         (document.activeElement as HTMLElement)?.blur();
                                     }}
-                                >Year to day
+                                >Last 12 Months
                                 </a>
                             </li>
                         </ul>

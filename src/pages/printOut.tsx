@@ -11,11 +11,16 @@ moment.locale("id");
 
 const PrintOut: FC = () => {
     const { id = "" } = useParams();
-    const { data: getOrder } = useGetOrderCompleteQuery(undefined, {
+    const { data: getOrder } = useGetOrderCompleteQuery({
+        year: 0,
+        month: 0,
+        process: "all"
+    }, {
         refetchOnFocus: true,
         refetchOnReconnect: true,
     });
     const order = getOrder?.find(o => o.order_id === id);
+    console.log(order)
     const { data: getOrderDetail = [] } = useGetOrderByIdQuery(id);
     const { data: getCompanyProfile } = useGetCompanyProfileQuery();
     const subtotal = getOrderDetail.reduce(

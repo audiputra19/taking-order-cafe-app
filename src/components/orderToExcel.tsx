@@ -2,7 +2,41 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import dayjs from "dayjs";
 
-export const exportOrdersToExcel = async (orders: any[], fetchDetail: any) => {
+export const exportOrdersToExcel = async (
+    orders: any[], 
+    fetchDetail: any,
+    filters: { year: number; month: number; status: string }
+) => {
+    // ====== JUDUL DINAMIS ======
+    const monthNames: any = {
+        1: "Januari",
+        2: "Februari",
+        3: "Maret",
+        4: "April",
+        5: "Mei",
+        6: "Juni",
+        7: "Juli",
+        8: "Agustus",
+        9: "September",
+        10: "Oktober",
+        11: "November",
+        12: "Desember",
+    };
+
+    let fileName = "Laporan Order";
+
+    if (filters.month !== 0) {
+        fileName += ` ${monthNames[filters.month]}`;
+    }
+
+    fileName += ` ${filters.year}`;
+
+    if (filters.status !== "all") {
+        fileName += filters.status === "done" ? " (Selesai)" : " (Batal)";
+    }
+
+    fileName += ".xlsx";
+
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet("Laporan Order");
 
@@ -163,5 +197,5 @@ export const exportOrdersToExcel = async (orders: any[], fetchDetail: any) => {
 
     // Export
     const buffer = await wb.xlsx.writeBuffer();
-    saveAs(new Blob([buffer]), "laporan-order.xlsx");
+    saveAs(new Blob([buffer]), fileName);
 };

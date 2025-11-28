@@ -14,11 +14,20 @@ export const apiOrder = createApi({
             }),
             providesTags: ["Order"]
         }),
-        getOrderComplete: builder.query<GetOrder[], { year: number, month: number, process: string }>({
-            query: (data) => ({
-                url: `order/get-order-complete/${data.year}/${data.month}/${data.process}`,
-                method: 'GET'
-            }),
+        getOrderComplete: builder.query<GetOrder[], void | { year: number; month: number; process: string }>({
+            query: (data) => {
+                if (!data) {
+                    return {
+                        url: `order/get-order-complete`,
+                        method: 'GET',
+                    };
+                }
+
+                return {
+                    url: `order/get-order-complete/${data.year}/${data.month}/${data.process}`,
+                    method: 'GET'
+                };
+            },
             providesTags: ["Order"]
         }),
         paidOrderByKasir: builder.mutation<OrderResponse, OrderRequest>({

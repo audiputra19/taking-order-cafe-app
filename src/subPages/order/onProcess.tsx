@@ -259,7 +259,7 @@ export const OnProcess: FC = () => {
                                                     )}
                                                     {item.proses === "acc dapur" && (
                                                         <button
-                                                            className="btn btn-sm bg-gradient-to-r from-yellow-500 to-yellow-500 text-white rounded border-none"
+                                                            className="btn btn-sm bg-gradient-to-r from-green-600 to-green-500 text-white rounded border-none"
                                                             onClick={() => handleReady(item.order_id)}
                                                         >
                                                             Pesanan Siap
@@ -267,7 +267,7 @@ export const OnProcess: FC = () => {
                                                     )}
                                                     {item.proses === "ready" && (
                                                         <button
-                                                            className="btn btn-sm bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded border-none"
+                                                            className="btn btn-sm bg-gradient-to-r from-green-600 to-green-500 text-white rounded border-none"
                                                             onClick={() => handleFinish(item.order_id)}
                                                         >
                                                             Pesanan Selesai
@@ -315,7 +315,7 @@ export const OnProcess: FC = () => {
                                                             )}
                                                             {item.proses === "acc dapur" && (
                                                                 <button
-                                                                    className="btn btn-sm bg-gradient-to-r from-yellow-500 to-yellow-500 text-white rounded border-none"
+                                                                    className="btn btn-sm bg-gradient-to-r from-green-600 to-green-500 text-white rounded border-none"
                                                                     onClick={() => handleReady(item.order_id)}
                                                                 >
                                                                     Pesanan Siap
@@ -323,7 +323,7 @@ export const OnProcess: FC = () => {
                                                             )}
                                                             {item.proses === "ready" && (
                                                                 <button
-                                                                    className="btn btn-sm bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded border-none"
+                                                                    className="btn btn-sm bg-gradient-to-r from-green-600 to-green-500 text-white rounded border-none"
                                                                     onClick={() => handleFinish(item.order_id)}
                                                                 >
                                                                     Pesanan Selesai

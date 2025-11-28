@@ -2,7 +2,53 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import dayjs from "dayjs";
 
-export const exportOrdersToPDF = async (orders: any[], fetchDetail: any) => {
+export const exportOrdersToPDF = async (
+    orders: any[], 
+    fetchDetail: any,
+    filters: { year: number; month: number; status: string }
+) => {
+    // ====== JUDUL DINAMIS ======
+    const monthNames: any = {
+        1: "Januari",
+        2: "Februari",
+        3: "Maret",
+        4: "April",
+        5: "Mei",
+        6: "Juni",
+        7: "Juli",
+        8: "Agustus",
+        9: "September",
+        10: "Oktober",
+        11: "November",
+        12: "Desember",
+    };
+
+    let fileName = "Laporan Order";
+
+    if (filters.month !== 0) {
+        fileName += ` ${monthNames[filters.month]}`;
+    }
+
+    fileName += ` ${filters.year}`;
+
+    if (filters.status !== "all") {
+        fileName += filters.status === "done" ? " (Selesai)" : " (Batal)";
+    }
+
+    fileName += ".pdf";
+
+    let title = "Laporan Order";
+
+    if (filters.month !== 0) {
+        title += ` ${monthNames[filters.month]}`;
+    }
+
+    title += ` ${filters.year}`;
+
+    if (filters.status !== "all") {
+        title += filters.status === "done" ? " (Selesai)" : " (Batal)";
+    }
+
     const doc = new jsPDF("p", "mm", "a4");
 
     // =====================
@@ -10,7 +56,7 @@ export const exportOrdersToPDF = async (orders: any[], fetchDetail: any) => {
     // =====================
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
-    doc.text("Laporan Order", 105, 15, { align: "center" });
+    doc.text(title, 105, 15, { align: "center" });
 
     let y = 35;
 
@@ -175,5 +221,5 @@ export const exportOrdersToPDF = async (orders: any[], fetchDetail: any) => {
         }
     }
 
-    doc.save("laporan-order.pdf");
+    doc.save(fileName);
 };
