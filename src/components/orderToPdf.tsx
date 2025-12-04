@@ -59,6 +59,7 @@ export const exportOrdersToPDF = async (
     doc.text(title, 105, 15, { align: "center" });
 
     let y = 35;
+    let grandTotal = 0;
 
     for (const order of orders) {
         const formattedDate = dayjs(order.created_at).format("YYYY-MM-DD HH:mm:ss");
@@ -75,6 +76,7 @@ export const exportOrdersToPDF = async (
         ]);
 
         let subtotal = details.reduce((acc: number, d: any) => acc + (d.qty * d.harga), 0);
+        grandTotal += order.total;
 
         // ========== HITUNG POTONGAN ==========
         let potongan = 0;
@@ -220,6 +222,27 @@ export const exportOrdersToPDF = async (
             y = 20;
         }
     }
+
+    // ========== GRAND TOTAL DI PALING BAWAH ==========
+
+    // Jika posisi Y terlalu rendah, pindah halaman
+    if (y > 250) {
+        doc.addPage();
+        y = 20;
+    }
+
+    // Tabel total besar
+    autoTable(doc, {
+        startY: y + 4,
+        body: [[
+            { content: "Grand Total", styles: { halign: "right", fontStyle: "bold" } },
+            { content: `Rp ${grandTotal.toLocaleString()}`, styles: { halign: "right", fontStyle: "bold", textColor: [0, 120, 0] } }
+        ]],
+        theme: "grid",
+        styles: { fontSize: 12 },
+        tableWidth: "auto",
+        margin: { left: 14, right: 14 },
+    });
 
     doc.save(fileName);
 };

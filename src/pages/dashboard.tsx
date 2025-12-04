@@ -13,7 +13,7 @@ const Dashboard: FC = () => {
             {/* Filter */}
             <div className="flex justify-between gap-3">
                 <div className="flex items-center gap-5">
-                    <div className="dropdown dropdown-start">
+                    <div className="dropdown dropdown-start max-w-48">
                         <div 
                             tabIndex={0} 
                             className="flex items-center gap-3 text-sm font-semibold border border-base-300 px-3 py-2 rounded cursor-pointer"
@@ -42,14 +42,14 @@ const Dashboard: FC = () => {
                             </li>
                         </ul>
                     </div>
-                    <div className="dropdown dropdown-start w-36">
+                    <div className="dropdown dropdown-start max-w-42">
                         <div 
                             tabIndex={1} 
                             className="flex items-center gap-3 text-sm font-semibold border border-base-300 px-3 py-2 rounded cursor-pointer"
                         >
                             <LuCalendar size={18} className="text-green-500"/>
                             {(selectPeriode === 1) 
-                            ? "Last Months" 
+                            ? "This Month" 
                             : (selectPeriode === 2) 
                             ? "Last 3 Months" 
                             : "Last 12 Months"}
@@ -61,7 +61,7 @@ const Dashboard: FC = () => {
                                         setSelectPeriode(1);
                                         (document.activeElement as HTMLElement)?.blur();
                                     }}
-                                >Last Month
+                                >This Month
                                 </a>
                             </li>
                             <li>

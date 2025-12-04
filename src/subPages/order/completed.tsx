@@ -350,15 +350,17 @@ export const Completed: FC = () => {
                         </tr>
                     )}
                     </tbody>
-                    <tfoot className="sticky bottom-0 bg-base-100">
-                        <tr>
-                            <th colSpan={5} className="text-right font-bold">Total</th>
-                            <th className="text-right font-bold">
-                                Rp. {grandTotal.toLocaleString("id-ID")}
-                            </th>
-                            <th colSpan={2}></th>
-                        </tr>
-                    </tfoot>
+                    {getOrder && getOrder.length > 0 && (
+                        <tfoot className="sticky bottom-0 bg-base-100">
+                            <tr>
+                                <th colSpan={5} className="text-right font-bold">Total</th>
+                                <th className="text-right font-bold">
+                                    Rp. {grandTotal.toLocaleString("id-ID")}
+                                </th>
+                                <th colSpan={2}></th>
+                            </tr>
+                        </tfoot>
+                    )}
                 </table>
             </div>
         </>

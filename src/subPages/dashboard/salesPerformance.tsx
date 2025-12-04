@@ -50,11 +50,6 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
 
         let percent = ((curr - prev) / prev) * 100;
 
-        // Kalau lebih dari 100, skala dikompresi (bagi 10)
-        if (percent > 100) {
-            percent = percent / 10;
-        }
-
         return `${percent >= 0 ? "+" : ""}${percent.toFixed(2)}%`;
     };
 

@@ -64,6 +64,7 @@ export const exportOrdersToExcel = async (
     });
 
     let no = 1;
+    let grandTotal = 0;
 
     for (const order of orders) {
         const formattedDate = dayjs(order.created_at).format("YYYY-MM-DD HH:mm:ss");
@@ -174,6 +175,7 @@ export const exportOrdersToExcel = async (
 
         // ====== ROW TOTAL ======
         const totalAkhir = order.total;
+        grandTotal += totalAkhir;
         ws.addRow(["", "", "", "", "", "", "Total", totalAkhir]);
         ws.lastRow!.font = { bold: true, color: { argb: "FF008000" } };
         ws.lastRow!.getCell(7).alignment = { horizontal: "right" };
@@ -184,6 +186,27 @@ export const exportOrdersToExcel = async (
 
         no++;
     }
+
+    // ====== TOTAL SEMUA ORDER ====== 
+    ws.addRow(["", "", "", "TOTAL", grandTotal, "", "", ""]); 
+    const totalRow = ws.lastRow!; 
+    totalRow.font = { bold: true, size: 12};
+
+    // Background color
+    totalRow.eachCell((cell) => {
+        cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFF2F2F2" }
+        };
+    });
+
+    // Alignment
+    totalRow.getCell(4).alignment = { horizontal: "center" };
+    totalRow.getCell(5).alignment = { horizontal: "right" }; 
+    
+    // Spacer 
+    ws.addRow([]);
 
     // ====== AUTO FIT COLUMN WIDTH ======
     ws.columns.forEach((column: any) => {

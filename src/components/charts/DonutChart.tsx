@@ -33,7 +33,7 @@ const DonutChart: FC<DonutChartProps> = ({ orders, height, colors }) => {
     labels,
     datasets: [
       {
-        label: "Orders",
+        label: "Qty",
         data: values,
         backgroundColor: colors,
         borderColor: "white",
