@@ -9,6 +9,7 @@ import { usePostLoginMutation } from "../services/apiAuth";
 import { useAppDispatch } from "../store";
 import { setToken } from "../store/authSlice";
 import LoadingPage from "../components/loadingPage";
+import { ThemeSwitcher } from "../components/themeSwitcher";
 
 const Login: FC = () => {
     const [showPassword, setShowPassword] = useState('password');
@@ -35,24 +36,35 @@ const Login: FC = () => {
     return (
         <>
             {isLoadingLogin && <LoadingPage /> }
-            <div className="min-h-screen flex justify-center items-center bg-base-200">
-                <div className="w-[800px] h-[550px]">
-                    <div className="flex border border-base-300 bg-base-100 rounded-3xl h-full">
+            <div className="min-h-screen md:flex md:justify-center items-center bg-base-200">
+                <div className="lg:w-[800px] md:h-[550px]">
+                    <div className="flex border border-base-300 bg-base-100 md:rounded-3xl h-screen md:h-full">
                         <div className="flex-1 flex flex-col">
                             <div className="p-5">
-                                <div className="flex gap-2 items-center">
-                                    <div className={clsx(
-                                        "flex justify-center items-center rounded bg-gradient-to-r from-green-600 to-green-500 w-7 h-7 text-base-200"
-                                    )}>
-                                        <PiCoffeeBeanFill size={18}/>
+                                <div className="flex justify-between items-center">
+                                    <div className="flex gap-2 items-center">
+                                        <div className={clsx(
+                                            "flex justify-center items-center rounded bg-gradient-to-r from-green-600 to-green-500 w-7 h-7 text-base-200"
+                                        )}>
+                                            <PiCoffeeBeanFill size={18}/>
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold">Kopiku</p>
+                                        </div>
                                     </div>
                                     <div>
-                                        <p className="font-semibold">Kopiku</p>
+                                        <ThemeSwitcher />
                                     </div>
                                 </div>
                             </div>
                             <div className="mx-5 mb-5 flex-1 flex flex-col gap-3 justify-center items-center">
                                 <div className="text-center">
+                                    <div className="md:hidden">
+                                        <img
+                                            src={loginImageDark}
+                                            className="w-64"
+                                        />
+                                    </div>
                                     <p className="font-semibold text-xl">Sign in to Kopiku</p>
                                     <p className="text-gray-400 text-xs mt-2">Smart Management for Your Cafe</p>
                                 </div>
@@ -111,9 +123,20 @@ const Login: FC = () => {
                                         Sign In
                                     </button>
                                 </div>
+                                <div className="mt-2">
+                                    <p className="flex gap-1 text-sm">
+                                        Don't have an account?
+                                        <span 
+                                            className="text-blue-500 underline cursor-pointer hover:text-blue-800"
+                                            onClick={() => navigate('/register')}
+                                        >
+                                            Register
+                                        </span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                        <div className="relative w-[350px] mt-3 mb-3 mr-3 bg-gradient-to-t from-green-500 to-green-400 shadow-green-500 rounded-2xl flex flex-col justify-center items-center overflow-hidden">
+                        <div className="hidden md:block relative w-[350px] mt-3 mb-3 mr-3 bg-gradient-to-t from-green-500 to-green-400 shadow-green-500 rounded-2xl md:flex flex-col justify-center items-center overflow-hidden">
                             <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(0,0,0,0)_40%,rgba(0,0,0,0.2)_100%)] pointer-events-none" />
                             <img
                                 src={loginImageDark}

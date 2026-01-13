@@ -7,17 +7,22 @@ import LineChart, { type RangeType } from "../../components/charts/lineChart";
 import { getCategoryName } from "../../components/getCategoryName";
 import { getRangeLineChart } from "../../components/getRangeLineChart";
 import { useAverageFulfillmentTimeMutation, useAverageOrderMutation, useBestSellingProductsMutation, useCategoryPerformanceMutation, useLowestSellingProductsMutation, useOrderCanceledMutation, useOrderTrendQuery, usePeakOrderTimeMutation, useTotalOrderMutation } from "../../services/apiDashboard";
+import { usePostMeQuery } from "../../services/apiAuth";
 
 interface SalesPerformanceProps {
     selectPeriode: number;
 }
 
 export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) => {
+    const { data: MeData } = usePostMeQuery();
+    const user = MeData?.user;
     const [totalOrder, { data: getTotalOrder, isLoading: isLoadingGetTotalOrder }] = useTotalOrderMutation();
     const [orderCanceled, { data: getOrderCanceled, isLoading: isLoadingGetOrderCanceled }] = useOrderCanceledMutation();
     const [averageOrder, { data: getAverageOrder, isLoading: isLoadingGetAverageOrder }] = useAverageOrderMutation();
     const [categoryPerformance, { data: getCategoryPerformance }] = useCategoryPerformanceMutation();
-    const { data: getOrderTrend } = useOrderTrendQuery(undefined, {
+    const { data: getOrderTrend } = useOrderTrendQuery({
+        outlet_id: user?.outlet_id
+    }, {
         refetchOnReconnect: true,
         refetchOnFocus: true
     });
@@ -30,14 +35,14 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
     
     useEffect(() => {
         if(selectPeriode) {
-            totalOrder({ periode: selectPeriode });
-            orderCanceled({ periode: selectPeriode });
-            averageOrder({ periode: selectPeriode });
-            categoryPerformance({ periode: selectPeriode });
-            bestSellingProd({ periode: selectPeriode });
-            lowestSellingProd({ periode: selectPeriode });
-            averageFulfillmentTime({ periode: selectPeriode });
-            peakOrderTime({ periode: selectPeriode });
+            totalOrder({ outlet_id: user?.outlet_id, periode: selectPeriode });
+            orderCanceled({ outlet_id: user?.outlet_id, periode: selectPeriode });
+            averageOrder({ outlet_id: user?.outlet_id, periode: selectPeriode });
+            categoryPerformance({ outlet_id: user?.outlet_id, periode: selectPeriode });
+            bestSellingProd({ outlet_id: user?.outlet_id, periode: selectPeriode });
+            lowestSellingProd({ outlet_id: user?.outlet_id, periode: selectPeriode });
+            averageFulfillmentTime({ outlet_id: user?.outlet_id, periode: selectPeriode });
+            peakOrderTime({ outlet_id: user?.outlet_id, periode: selectPeriode });
         }
     }, [selectPeriode])
     
@@ -86,7 +91,7 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
             {/* Part 1 */}
 
             <div className="mt-5">
-                <div className="grid grid-cols-3 gap-5">
+                <div className="flex flex-col lg:grid lg:grid-cols-3 gap-5">
                     <div className="border border-base-300 bg-base-100 p-5 rounded">
                         <div className="flex justify-between items-center">
                             <p className="text-lg text-gray-500 font-semibold">Total Order</p>
@@ -96,7 +101,7 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
                         </div>
                         <div className="mt-1">
                             {isLoadingGetTotalOrder ? (
-                                <div className="skeleton h-5 w-32"></div>
+                                <span className="skeleton h-5 w-32"></span>
                             ) : (
                                 <p className="text-2xl font-bold">{getTotalOrder?.current.total_order ?? 0} orders</p>
                             )}
@@ -112,7 +117,9 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
                                         getTotalOrder?.current.total_order ?? 0, 
                                         getTotalOrder?.previous.total_order ?? 0
                                     )} 
-                                    <span className="ml-1">from past month</span>
+                                    <span className="ml-1">
+                                        from past {selectPeriode === 3 ? "year" : "month"}
+                                    </span>
                                 </p>
                             </div>
                         </div>
@@ -126,7 +133,7 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
                         </div>
                         <div className="mt-1">
                             {isLoadingGetOrderCanceled ? (
-                                <div className="skeleton h-5 w-32"></div>
+                                <span className="skeleton h-5 w-32"></span>
                             ) : (
                                 <p className="text-2xl font-bold">{getOrderCanceled?.current.total_order ?? 0} orders</p>
                             )}
@@ -142,7 +149,9 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
                                         getOrderCanceled?.current.total_order ?? 0, 
                                         getOrderCanceled?.previous.total_order ?? 0
                                     )} 
-                                    <span className="ml-1">from past month</span>
+                                    <span className="ml-1">
+                                        from past {selectPeriode === 3 ? "year" : "month"}
+                                    </span>
                                 </p>
                             </div>
                         </div>
@@ -158,7 +167,7 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
                         </div>
                         <div className="mt-1">
                             {isLoadingGetAverageOrder ? (
-                                <div className="skeleton h-5 w-32"></div>
+                                <span className="skeleton h-5 w-32"></span>
                             ) : (
                                 <p className="text-2xl font-bold">
                                     {getAverageOrder?.current.average ?? 0} orders / {getAverageOrder?.current.unit ?? 'days'}
@@ -176,7 +185,9 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
                                         getAverageOrder?.current.average ?? 0, 
                                         getAverageOrder?.previous.average ?? 0
                                     )} 
-                                    <span className="ml-1">from past month</span>
+                                    <span className="ml-1">
+                                        from past {selectPeriode === 3 ? "year" : "month"}
+                                    </span>
                                 </p>
                             </div>
                         </div>
@@ -187,7 +198,7 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
             {/* Part 2 */}
 
             <div className="mt-5">
-                <div className="grid grid-cols-2 gap-5">
+                <div className="flex flex-col lg:grid lg:grid-cols-2 gap-5">
                     <div className="border border-base-300 bg-base-100 p-5 rounded">
                         <div>
                             <p className="text-lg text-gray-500 font-semibold">Order Trend</p>
@@ -233,7 +244,7 @@ export const SalesPerformance: FC<SalesPerformanceProps> = ({ selectPeriode }) =
             {/* Part 3 */}
 
             <div className="mt-5">
-                <div className="grid grid-cols-3 gap-5">
+                <div className="flex flex-col lg:grid lg:grid-cols-3 gap-5">
                     <div className="row-span-2 border border-base-300 bg-base-100 p-5 rounded">
                         <div>
                             <p className="text-lg text-gray-500 font-semibold">Top 5 Best-Selling Products</p>

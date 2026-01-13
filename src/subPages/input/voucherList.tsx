@@ -6,26 +6,20 @@ import { useNavigate } from "react-router-dom";
 import LoadingPage from "../../components/loadingPage";
 import { useAlert } from "../../contexts/alertContext";
 import { useDeleteVoucherMutation, useGetVoucherQuery } from "../../services/apiVoucher";
+import { usePostMeQuery } from "../../services/apiAuth";
 
 export const VoucherList: FC = () => {
-    const {data: getVoucher, isLoading: isLoadingVoucher} = useGetVoucherQuery(undefined, {
+    const { data: MeData } = usePostMeQuery();
+    const user = MeData?.user;
+    const {data: getVoucher, isLoading: isLoadingVoucher} = useGetVoucherQuery({
+        outlet_id: user?.outlet_id
+    }, {
         refetchOnMountOrArgChange: true
     });
     const [deleteVoucher, {isLoading: isLoadingDelVoucher}] = useDeleteVoucherMutation();
     const navigate = useNavigate();
     const { showAlert } = useAlert();
-
-    // const handleDiscontinue = async (id: string) => {
-    //     const confirm = window.confirm("Apakah kamu yakin ingin discontinue produk ini?");
-    //     if (!confirm) return;
-
-    //     try {
-    //         const res = await discontinueProduct(id).unwrap();
-    //         showAlert(res.message);
-    //     } catch (error: any) {
-    //         showAlert(error?.data?.message ?? 'Terjadi kesalahan')
-    //     }
-    // }
+    const isMobile = window.innerWidth < 768;
 
     const handleDeleteVoucher = async (id: string) => {
         const confirm = window.confirm("Apakah kamu yakin ingin menghapus voucher ini?");
@@ -42,7 +36,7 @@ export const VoucherList: FC = () => {
     return (
         <>
             {isLoadingVoucher || isLoadingDelVoucher && <LoadingPage />}
-            <div className="overflow-x-auto max-h-[435px]">
+            <div className="overflow-x-auto max-h-[720px] lg:max-h-[435px] mt-5 px-5 md:m-0 md:p-0">
                 <table className="table table-zebra">
                     <thead className="sticky top-0 bg-base-100 z-10">
                     <tr>
@@ -70,7 +64,13 @@ export const VoucherList: FC = () => {
                                             <div className="tooltip tooltip-left" data-tip="Edit">
                                                 <div
                                                     className="cursor-pointer"
-                                                    onClick={() => navigate(`/edit-voucher/${item.id_voucher}`)}
+                                                    onClick={() => {
+                                                        const path = isMobile
+                                                            ? `/voc-edit/${item.id_voucher}`
+                                                            : `/edit-voucher/${item.id_voucher}`;
+
+                                                        navigate(path);
+                                                    }}
                                                 >
                                                     <MdOutlineEdit size={20}/>
                                                 </div>

@@ -21,7 +21,7 @@ const Order:FC = () => {
 
     return (
         <>
-            <div className="tabs tabs-lift">
+            <div className="tabs tabs-lift p-5">
                 <label 
                     className="tab z-0"
                     onClick={() => {

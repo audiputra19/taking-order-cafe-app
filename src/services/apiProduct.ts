@@ -7,16 +7,16 @@ export const apiProduct = createApi({
     baseQuery,
     tagTypes: ["Product"],
     endpoints: build => ({
-        getProduct: build.query<GetProductResponse[], void>({
-            query: () => ({
-                url: 'get-product',
+        getProduct: build.query<GetProductResponse[], { outlet_id: string | undefined }>({
+            query: (data) => ({
+                url: `get-product/${data.outlet_id}`,
                 method: 'GET'
             }),
             providesTags: ["Product"],
         }),
-        getProductDiscontinue: build.query<GetProductResponse[], void>({
-            query: () => ({
-                url: 'get-product-discontinue',
+        getProductDiscontinue: build.query<GetProductResponse[], { outlet_id: string | undefined }>({
+            query: (data) => ({
+                url: `get-product-discontinue/${data.outlet_id}`,
                 method: 'GET'
             }),
             providesTags: ["Product"],

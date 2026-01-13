@@ -3,9 +3,14 @@ import { MdAutorenew } from "react-icons/md";
 import LoadingPage from "../../components/loadingPage";
 import { useAlert } from "../../contexts/alertContext";
 import { useActivateProductMutation, useGetProductDiscontinueQuery } from "../../services/apiProduct";
+import { usePostMeQuery } from "../../services/apiAuth";
 
 const Discontinue: FC = () => {
-    const {data: getProductDis, isLoading: isLoadingProductDis} = useGetProductDiscontinueQuery(undefined, {
+    const { data: MeData } = usePostMeQuery();
+    const user = MeData?.user;
+    const {data: getProductDis, isLoading: isLoadingProductDis} = useGetProductDiscontinueQuery({
+        outlet_id: user?.outlet_id
+    }, {
         refetchOnMountOrArgChange: true
     });
     const [activateProduct, { isLoading: isLoadingActivate }] = useActivateProductMutation();
@@ -26,7 +31,7 @@ const Discontinue: FC = () => {
     return (
         <>
             {isLoadingProductDis || isLoadingActivate && <LoadingPage />}
-            <div className="overflow-x-auto max-h-[435px]">
+            <div className="overflow-x-auto max-h-[720px] lg:max-h-[435px] mt-5 px-5 md:m-0 md:p-0">
                 <table className="table table-zebra">
                     <thead className="sticky top-0 bg-base-100 z-10">
                     <tr>

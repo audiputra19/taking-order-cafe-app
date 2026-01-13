@@ -15,9 +15,9 @@ export const apiVoucher = createApi({
             }),
             invalidatesTags: ["Voucher"]
         }),
-        getVoucher: builder.query<GetVoucherResponse[], void>({
-            query: () => ({
-                url: 'voucher/get-voucher',
+        getVoucher: builder.query<GetVoucherResponse[], { outlet_id: string | undefined }>({
+            query: (data) => ({
+                url: `voucher/get-voucher/${data.outlet_id}`,
                 method: 'POST'
             }),
             providesTags: ["Voucher"]

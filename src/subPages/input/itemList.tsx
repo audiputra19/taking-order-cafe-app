@@ -4,14 +4,20 @@ import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../contexts/alertContext";
 import { useDiscontinueProductMutation, useGetProductQuery } from "../../services/apiProduct";
 import LoadingPage from "../../components/loadingPage";
+import { usePostMeQuery } from "../../services/apiAuth";
 
 export const ItemList: FC = () => {
-    const {data: getProduct, isLoading: isLoadingProduct} = useGetProductQuery(undefined, {
+    const { data: MeData } = usePostMeQuery();
+    const user = MeData?.user;
+    const {data: getProduct, isLoading: isLoadingProduct} = useGetProductQuery({
+        outlet_id: user?.outlet_id
+    }, {
         refetchOnMountOrArgChange: true
     });
     const [discontinueProduct, { isLoading: isLoadingDis }] = useDiscontinueProductMutation();
     const navigate = useNavigate();
     const { showAlert } = useAlert();
+    const isMobile = window.innerWidth < 768;
 
     const handleDiscontinue = async (id: string) => {
         const confirm = window.confirm("Apakah kamu yakin ingin discontinue produk ini?");
@@ -28,7 +34,7 @@ export const ItemList: FC = () => {
     return (
         <>
             {isLoadingProduct || isLoadingDis && <LoadingPage />}
-            <div className="overflow-x-auto max-h-[435px]">
+            <div className="overflow-x-auto max-h-[720px] lg:max-h-[435px] mt-5 px-5 md:m-0 md:p-0">
                 <table className="table table-zebra">
                     <thead className="sticky top-0 bg-base-100 z-10">
                     <tr>
@@ -46,16 +52,16 @@ export const ItemList: FC = () => {
                                 let cat = ''
                                 switch(item.kategori) {
                                     case 1:
-                                        cat = 'Food';
+                                        cat = 'Makanan';
                                         break;
                                     case 2:
-                                        cat = 'Beverage';
+                                        cat = 'Minuman';
                                         break;
                                     case 3:
                                         cat = 'Snack';
                                         break;
                                     case 4:
-                                        cat = 'Coffee';
+                                        cat = 'Kopi';
                                         break;                 
                                 }
 
@@ -70,7 +76,13 @@ export const ItemList: FC = () => {
                                             <div className="tooltip tooltip-left" data-tip="Edit">
                                                 <div
                                                     className="cursor-pointer"
-                                                    onClick={() => navigate(`/edit-input/${item.id}`)}
+                                                    onClick={() => {
+                                                        const path = isMobile
+                                                            ? `/item-edit/${item.id}`
+                                                            : `/edit-input/${item.id}`;
+
+                                                        navigate(path);
+                                                    }}
                                                 >
                                                     <MdOutlineEdit size={20}/>
                                                 </div>

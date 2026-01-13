@@ -3,20 +3,25 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import LoadingPage from "../../components/loadingPage";
 import { useAlert } from "../../contexts/alertContext";
 import { useDeleteUserMutation, useGetUserQuery } from "../../services/apiUser";
+import { usePostMeQuery } from "../../services/apiAuth";
 
 export const UserList: FC = () => {
-    const {data: getUser, isLoading: isLoadingUser} = useGetUserQuery(undefined, {
+    const { data: MeData } = usePostMeQuery();
+    const user = MeData?.user;
+    const {data: getUser, isLoading: isLoadingUser} = useGetUserQuery({
+        outlet_id: user?.outlet_id
+    }, {
         refetchOnMountOrArgChange: true
     });
     const [deleteUser, {isLoading: isLoadingDelUser}] = useDeleteUserMutation();
     const { showAlert } = useAlert();
 
-    const handleDelete = async (username: string) => {
+    const handleDelete = async (username: string, outlet_id: string) => {
         const confirm = window.confirm("Apakah kamu yakin ingin menghapus user ini?");
         if (!confirm) return;
 
         try {
-            const res = await deleteUser(username).unwrap();
+            const res = await deleteUser({username, outlet_id}).unwrap();
             showAlert(res.message);
         } catch (error: any) {
             showAlert(error.data.message ?? 'Terjadi kesalahan')
@@ -26,7 +31,7 @@ export const UserList: FC = () => {
     return (
         <>
             {isLoadingUser || isLoadingDelUser && <LoadingPage />}
-            <div className="overflow-x-auto max-h-[435px]">
+            <div className="overflow-x-auto max-h-[720px] max-h-[435px] mt-5 px-5 md:m-0 md:p-0">
                 <table className="table table-zebra">
                     <thead className="sticky top-0 bg-base-100 z-10">
                     <tr>
@@ -56,14 +61,14 @@ export const UserList: FC = () => {
                                 return (
                                     <tr key={item.username}>
                                         <th className="text-center">{i + 1}</th>
-                                        <td>{item.nama}</td>
+                                        <td>{item.name}</td>
                                         <td className="text-center">{item.username}</td>
                                         <td className="text-center">{bagian}</td>
                                         <td className="flex justify-center gap-3">
                                             <div className="tooltip tooltip-left" data-tip="Hapus">
                                                 <div
                                                     className="cursor-pointer"
-                                                    onClick={() => handleDelete(item.username)}
+                                                    onClick={() => handleDelete(item.username, item.outlet_id)}
                                                 >
                                                     <RiDeleteBin5Line size={20}/>
                                                 </div>

@@ -108,7 +108,7 @@ export const OnProcess: FC = () => {
             isLoadingAccByDapur || isLoadingReady || isLoadingFinish && (
                 <LoadingPage />
             )}
-            <div className="overflow-x-auto max-h-[435px]">
+            <div className="overflow-x-auto max-h-[720px] lg:max-h-[435px] p-5 md:p-0">
                 <table className="table table-zebra">
                     <thead>
                         <tr>

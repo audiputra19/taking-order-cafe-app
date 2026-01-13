@@ -15,17 +15,18 @@ export const apiUser = createApi({
             }),
             invalidatesTags: ["user"]
         }),
-        getUser: builder.query<GetUserResponse[], void>({
-            query: () => ({
-                url: 'user/get-user',
+        getUser: builder.query<GetUserResponse[], { outlet_id: string | undefined }>({
+            query: (data) => ({
+                url: `user/get-user/${data.outlet_id}`,
                 method: 'GET'
             }),
             providesTags: ["user"]
         }),
-        deleteUser: builder.mutation<DeleteUserResponse, string>({
-            query: (username) => ({
-                url: `user/delete-user/${username}`,
-                method: 'PUT'
+        deleteUser: builder.mutation<DeleteUserResponse, { username: string, outlet_id: string | undefined }>({
+            query: (body) => ({
+                url: `user/delete-user`,
+                method: 'PUT',
+                body
             }),
             invalidatesTags: ["user"]
         })

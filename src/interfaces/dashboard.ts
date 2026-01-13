@@ -1,4 +1,5 @@
 export interface TotalOrderRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -9,6 +10,7 @@ export interface TotalOrderResponse {
 }
 
 export interface OrderCanceledRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -19,6 +21,7 @@ export interface OrderCanceledResponse {
 }
 
 export interface AverageOrderRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -29,6 +32,7 @@ export interface AverageOrderResponse {
 }
 
 export interface CategoryPerformanceRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -46,6 +50,7 @@ export interface OrderTrendResponse {
 }
 
 export interface BestSellingProductsRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -56,6 +61,7 @@ export interface BestSellingProductsResponse {
 }
 
 export interface LowestSellingProductsRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -66,6 +72,7 @@ export interface LowestSellingProductsResponse {
 }
 
 export interface AverageFulfillmentTimeRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -78,6 +85,7 @@ export interface AverageFulfillmentTimeResponse {
 }
 
 export interface PeakOrderTimeRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -88,6 +96,7 @@ export interface PeakOrderTimeResponse {
 }
 
 export interface TotalRevenueRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -98,6 +107,7 @@ export interface TotalRevenueResponse {
 }
 
 export interface TotalProfitRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -108,6 +118,7 @@ export interface TotalProfitResponse {
 }
 
 export interface AverageOrderValueRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -118,6 +129,7 @@ export interface AverageOrderValueResponse {
 }
 
 export interface RevenueByProductRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -128,6 +140,7 @@ export interface RevenueByProductResponse {
 }
 
 export interface RevenueByCategoryRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 
@@ -145,6 +158,7 @@ export interface RevenueTrendResponse {
 }
 
 export interface TopPaymentMethodRequest {
+    outlet_id: string | undefined;
     periode: number;
 }
 

@@ -15,9 +15,9 @@ export const apiProfile = createApi({
             }),
             invalidatesTags: ["Profile"]
         }),
-        getCompanyProfile: build.query<GetCompanyProfileResponse, void>({
-            query: () => ({
-                url: "profile/get-company-profile",
+        getCompanyProfile: build.query<GetCompanyProfileResponse, { outlet_id: string | undefined }>({
+            query: (data) => ({
+                url: `profile/get-company-profile/${data.outlet_id}`,
                 method: "GET"
             }),
             providesTags: ["Profile"]

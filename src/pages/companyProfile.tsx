@@ -3,6 +3,7 @@ import { MdChevronRight, MdImage } from "react-icons/md";
 import { BASE_URL } from "../components/BASE_URL";
 import { useAlert } from "../contexts/alertContext";
 import { useCreateCompanyProfileMutation, useGetCompanyProfileQuery } from "../services/apiProfile";
+import { usePostMeQuery } from "../services/apiAuth";
 
 interface CompanyForm {
     name: string;
@@ -25,8 +26,12 @@ const CompanyProfile: FC = () => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const nameInputRef = useRef<HTMLInputElement | null>(null);
     const addressInputRef = useRef<HTMLInputElement | null>(null);
+    const { data: MeData } = usePostMeQuery();
+    const user = MeData?.user;
     const [createCompany] = useCreateCompanyProfileMutation();
-    const { data: getCompanyProfile } = useGetCompanyProfileQuery(undefined, {
+    const { data: getCompanyProfile } = useGetCompanyProfileQuery({
+        outlet_id: user?.outlet_id
+    }, {
         refetchOnFocus: true,
         refetchOnReconnect: true
     });
@@ -119,14 +124,14 @@ const CompanyProfile: FC = () => {
 
     return (
         <>
-            <div className="flex flex-col justify-center items-center">
-                <div className="w-[700px] border border-base-300 rounded p-5">
+            <div className="flex flex-col lg:justify-center lg:items-center p-5">
+                <div className="w-full lg:w-[700px] border border-base-300 rounded p-5">
                     <div className="flex justify-between">
                         <div className="flex flex-col gap-1">
                             <p className="font-semibold">Upload Logo</p>
                             <p className="text-sm text-gray-500">Max size 2MB</p>
                         </div>
-                        <div className="flex items-center gap-5 w-[200px]">
+                        <div className="flex items-center gap-5 w-[170px] lg:w-[200px]">
                             <div>
                                 {preview ? (
                                     <img 
@@ -160,8 +165,8 @@ const CompanyProfile: FC = () => {
                         </div>
                     </div>
                     <div className="border-t border-base-300 my-5"></div>
-                    <div className="flex justify-between">
-                        <div className="flex flex-col gap-1">
+                    <div className="flex justify-between gap-5">
+                        <div className="flex flex-col gap-1 w-[200px]">
                             <p className="font-semibold">Name</p>
                             <p className="text-sm text-gray-500">The official legal name of your cafe</p>
                         </div>
@@ -188,8 +193,8 @@ const CompanyProfile: FC = () => {
                         </div>
                     </div>
                     <div className="border-t border-base-300 my-5"></div>
-                    <div className="flex justify-between">
-                        <div className="flex flex-col gap-1">
+                    <div className="flex justify-between gap-5">
+                        <div className="flex flex-col gap-1 w-[200px]">
                             <p className="font-semibold">Address</p>
                             <p className="text-sm text-gray-500">The official residential address</p>
                         </div>
@@ -219,7 +224,7 @@ const CompanyProfile: FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-[700px] mt-5">
+                <div className="lg:w-[700px] mt-5">
                     <div className="flex justify-end">
                         <button
                             onClick={handleSave}

@@ -11,6 +11,7 @@ import { exportOrdersToExcel } from "../../components/orderToExcel";
 import { exportOrdersToPDF } from "../../components/orderToPdf";
 import { useGetOrderCompleteQuery, useLazyGetOrderByIdQuery } from "../../services/apiOrder";
 import { socket, socket2 } from "../../socket";
+import { usePostMeQuery } from "../../services/apiAuth";
 
 export const Completed: FC = () => {
     const currentYear = moment().year();
@@ -35,11 +36,18 @@ export const Completed: FC = () => {
         { label: "Done", value: "done" },
         { label: "Canceled", value: "canceled" },
     ];
+    const { data: MeData } = usePostMeQuery();
+    const user = MeData?.user;
     const [selectedYear, setSelectedYear] = useState<number>(currentYear);
     const [selectedMonth, setSelectedMonth] = useState<number>(0);
     const [selectedProcess, setSelectedProcess] = useState<string>("all");
     const { data: getOrder, refetch } = useGetOrderCompleteQuery(
-        { year: selectedYear, month: selectedMonth, process: selectedProcess }, 
+        { 
+            year: selectedYear, 
+            month: selectedMonth, 
+            process: selectedProcess,
+            outlet_id: user?.outlet_id
+        },
         { refetchOnMountOrArgChange: true }
     );
     const [fetchDetail, { data: getOrderDetail = [], isFetching }] = useLazyGetOrderByIdQuery();
@@ -47,6 +55,7 @@ export const Completed: FC = () => {
     const navigate = useNavigate();
     const subtotal = getOrderDetail.reduce((sum, d) => sum + d.qty * d.harga, 0);
     const grandTotal = getOrder?.reduce((sum, x) => sum + x.total, 0) ?? 0;
+    const isMobile = window.innerWidth < 768;
 
     useEffect(() => {
         socket.on("order:update", () => {
@@ -74,9 +83,9 @@ export const Completed: FC = () => {
 
     return (
         <>
-            <div className="flex justify-between items-center gap-3">
-                <div className="flex gap-3">
-                    <div className="dropdown dropdown-start">
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3 p-5 md:p-0">
+                <div className="flex flex-col md:flex-row gap-3">
+                    <div className="dropdown dropdown-start bg-base-200">
                         <div
                             tabIndex={0}
                             className="flex items-center gap-3 text-sm font-semibold border border-base-300 px-3 py-2 rounded cursor-pointer"
@@ -103,7 +112,7 @@ export const Completed: FC = () => {
                             ))}
                         </ul>
                     </div>
-                    <div className="dropdown dropdown-start">
+                    <div className="dropdown dropdown-start bg-base-200">
                         <div tabIndex={0} className="flex items-center gap-3 text-sm font-semibold border border-base-300 px-3 py-2 rounded cursor-pointer">
                             <LuSettings2 size={18} className="text-green-500" />
                             {months.find((m) => m.value === selectedMonth)?.label}
@@ -118,7 +127,7 @@ export const Completed: FC = () => {
                             ))}
                         </ul>
                     </div>
-                    <div className="dropdown dropdown-start">
+                    <div className="dropdown dropdown-start bg-base-200">
                         <div tabIndex={0} className="flex items-center gap-3 text-sm font-semibold border border-base-300 px-3 py-2 rounded cursor-pointer">
                             <LuSettings2 size={18} className="text-green-500" />
                             {process.find((p) => p.value === selectedProcess)?.label}
@@ -169,7 +178,7 @@ export const Completed: FC = () => {
                     </button>
                 </div>
             </div>
-            <div className="overflow-x-auto max-h-[378px] mt-5">
+            <div className="overflow-x-auto max-h-[720px] lg:max-h-[378px] mt-5 px-5 md:p-0">
                 <table className="table table-zebra">
                     <thead className="sticky top-0 bg-base-100 z-10">
                         <tr>
@@ -327,7 +336,13 @@ export const Completed: FC = () => {
                                                     <div className="flex justify-end p-4">
                                                         <button
                                                             className="btn btn-sm border-none rounded bg-gradient-to-r from-green-600 to-green-500 text-white"
-                                                            onClick={() => navigate(`/print-out/${item.order_id}`)}
+                                                            onClick={() => {
+                                                                const path = isMobile
+                                                                    ? `/print-order/${item.order_id}`
+                                                                    : `/print-out/${item.order_id}`;
+
+                                                                navigate(path);
+                                                            }}
                                                         >
                                                             <MdPrint size={18}/>
                                                             Print                

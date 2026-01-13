@@ -31,9 +31,9 @@ export const apiDashboard = createApi({
             }),
             invalidatesTags: ["Dashboard"]
         }),
-        orderTrend: builder.query<OrderTrendResponse[], void>({
-            query: () => ({
-                url: '/dashboard/order-trend',
+        orderTrend: builder.query<OrderTrendResponse[], { outlet_id: string | undefined }>({
+            query: (data) => ({
+                url: `/dashboard/order-trend/${data.outlet_id}`,
                 method: 'GET'
             })
         }),
@@ -119,9 +119,9 @@ export const apiDashboard = createApi({
             }),
             invalidatesTags: ["Dashboard"]
         }),
-        revenueTrend: builder.query<RevenueTrendResponse[], void>({
-            query: () => ({
-                url: '/dashboard/revenue-trend',
+        revenueTrend: builder.query<RevenueTrendResponse[], { outlet_id: string | undefined }>({
+            query: (data) => ({
+                url: `/dashboard/revenue-trend/${data.outlet_id}`,
                 method: 'GET'
             })
         }),

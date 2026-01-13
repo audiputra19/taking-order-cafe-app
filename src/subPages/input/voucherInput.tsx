@@ -45,12 +45,12 @@ const VoucherInput: FC = () => {
     return (
         <>
             {isLoadingCreateVoucher && <LoadingPage /> }
-            <div className="flex justify-center">
+            <div className="lg:flex lg:justify-center p-5 md:p-0">
                 <div className="flex flex-col gap-5">
-                    <div className="grid grid-flow-col grid-rows-2 gap-5">
+                    <div className="flex flex-col lg:grid lg:grid-flow-col lg:grid-rows-2 gap-5">
                         <input 
                             type="text" 
-                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="input w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             placeholder="Nama Voucher" 
                             value={form.nama}
@@ -61,7 +61,7 @@ const VoucherInput: FC = () => {
                         />
                         <input 
                             type="number" 
-                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="input w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             placeholder="Minimal Belanja"
                             value={form.min_belanja === 0 ? '' : form.min_belanja}
@@ -72,7 +72,7 @@ const VoucherInput: FC = () => {
                         />
                         <input 
                             type="number" 
-                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="input w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             placeholder="Berapa Persen Voucher"
                             value={form.persen === 0 ? '' : form.persen}
@@ -83,7 +83,7 @@ const VoucherInput: FC = () => {
                         />
                         <input 
                             type="date" 
-                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="input w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             value={form.due_date}
                             onChange={(e) => setForm(prev => ({
@@ -101,7 +101,7 @@ const VoucherInput: FC = () => {
                             {form.nama !== '' || form.min_belanja !== 0 || 
                             form.persen !== 0 || form.due_date !== '' ? (
                                 <div className="flex flex-col justify-center items-center">
-                                    <div className="relative inline-block min-w-[370px]">
+                                    <div className="relative inline-block max-w-[360px]">
                                         <div className="flex border border-base-300 bg-white py-4 px-7 rounded-lg relative overflow-hidden">
                                             <div className="border-r border-dashed pr-5 font-bold border-gray-500">
                                                 <div className="flex flex-col justify-center items-center min-w-[60px]">

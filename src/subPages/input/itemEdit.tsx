@@ -8,9 +8,11 @@ import type { CreateProductRequest } from "../../interfaces/product";
 import { useGetProductQuery, useUpdateProductMutation } from "../../services/apiProduct";
 import LoadingPage from "../../components/loadingPage";
 import { BASE_URL } from "../../components/BASE_URL";
+import { usePostMeQuery } from "../../services/apiAuth";
 
 const ItemEdit: FC = () => {
     const [form, setForm] = useState<CreateProductRequest>({
+        outlet_id: '',
         nama: '',
         hpp: 0,
         harga: 0,
@@ -20,7 +22,11 @@ const ItemEdit: FC = () => {
     });
     const [preview, setPreview] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState<Boolean>(false);
-    const {data: getProduct, isLoading: isLoadingGetProd} = useGetProductQuery(undefined, {
+    const { data: MeData } = usePostMeQuery();
+    const user = MeData?.user;
+    const {data: getProduct, isLoading: isLoadingGetProd} = useGetProductQuery({
+        outlet_id: user?.outlet_id
+    }, {
         refetchOnMountOrArgChange: true
     });
     const {id} = useParams();
@@ -32,6 +38,7 @@ const ItemEdit: FC = () => {
     useEffect(() => {
         if (productExist) {
             setForm({
+                outlet_id: productExist.outlet_id,
                 nama: productExist.nama,
                 hpp: productExist.hpp,
                 harga: productExist.harga,
@@ -101,13 +108,13 @@ const ItemEdit: FC = () => {
     return (
         <>
             {isLoadingGetProd || isLoadingUpdateProd && <LoadingPage />}
-            <div className="flex justify-center">
+            <div className="lg:flex lg:justify-center p-5 md:p-0">
                 <Alert />
                 <div className="flex flex-col gap-5">
-                    <div className="grid grid-flow-col grid-rows-2 gap-5">
+                    <div className="flex flex-col lg:grid lg:grid-flow-col lg:grid-rows-2 gap-5">
                         <input 
                             type="text" 
-                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="input w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             placeholder="Nama Produk" 
                             value={form.nama}
@@ -118,7 +125,7 @@ const ItemEdit: FC = () => {
                         />
                         <input 
                             type="number" 
-                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="input w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             placeholder="HPP"
                             value={form.hpp === 0 ? '' : form.hpp}
@@ -128,7 +135,7 @@ const ItemEdit: FC = () => {
                             }))} 
                         />
                         <select  
-                            className="select w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="select w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             value={form.kategori === 0 ? '' : form.kategori}
                             onChange={(e) => setForm(prev => ({
@@ -144,7 +151,7 @@ const ItemEdit: FC = () => {
                         </select>
                         <input 
                             type="number" 
-                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="input w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             placeholder="Harga"
                             value={form.harga === 0 ? '' : form.harga}
@@ -158,7 +165,7 @@ const ItemEdit: FC = () => {
                         <fieldset className="fieldset">
                             <input 
                                 type="file" 
-                                className="file-input w-[400px] border-base-300 rounded"
+                                className="file-input w-full lg:w-[400px] border-base-300 rounded"
                                 onChange={handleFileChange} 
                             />
                             <label className="label">Max size 2MB</label>
@@ -206,13 +213,22 @@ const ItemEdit: FC = () => {
                         </div>
                     </div>
                     <div className="flex justify-end">
-                        <button 
-                            type="submit" 
-                            className="btn btn-sm bg-gradient-to-r from-green-600 to-green-500 text-white rounded border-none"
-                            onClick={handleSave}
-                        >
-                            Save Change
-                        </button>
+                        <div className="flex gap-3">
+                            <button 
+                                type="submit" 
+                                className="btn btn-sm bg-gray-400 text-white rounded border-none"
+                                onClick={() => navigate(-1)}
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                type="submit" 
+                                className="btn btn-sm bg-gradient-to-r from-green-600 to-green-500 text-white rounded border-none"
+                                onClick={handleSave}
+                            >
+                                Save Change
+                            </button>    
+                        </div>
                     </div>
                 </div>
             </div>

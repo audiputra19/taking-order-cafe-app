@@ -1,4 +1,5 @@
 export interface CreateUserRequest {
+    outlet_id: string;
     nama: string;
     username: string;
     password: string;
@@ -11,7 +12,8 @@ export interface CreateUserResponse {
 }
 
 export interface GetUserResponse {
-    nama: string;
+    outlet_id: string;
+    name: string;
     username: string;
     password: string;
     confirmPassword: string;

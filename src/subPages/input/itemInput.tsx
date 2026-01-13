@@ -1,14 +1,16 @@
 import clsx from "clsx";
-import { useRef, useState, type ChangeEvent, type DragEvent, type FC } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type DragEvent, type FC } from "react";
 import { MdImage } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../contexts/alertContext";
 import type { CreateProductRequest } from "../../interfaces/product";
 import { useCreateProductMutation } from "../../services/apiProduct";
 import LoadingPage from "../../components/loadingPage";
+import { usePostMeQuery } from "../../services/apiAuth";
 
 const ItemInput: FC = () => {
     const [form, setForm] = useState<CreateProductRequest>({
+        outlet_id: '',
         nama: '',
         hpp: 0,
         harga: 0,
@@ -18,10 +20,21 @@ const ItemInput: FC = () => {
     });
     const [preview, setPreview] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState<Boolean>(false);
+    const { data: MeData } = usePostMeQuery();
+    const user = MeData?.user;
     const [createProduct, {isLoading: isLoadingCreateProd}] = useCreateProductMutation();
     const { showAlert } = useAlert();
     const navigate = useNavigate();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        if (user?.outlet_id) {
+            setForm(prev => ({
+                ...prev,
+                outlet_id: user.outlet_id
+            }));
+        }
+    }, [user?.outlet_id]);
 
     const handleFile = (file: File) => {
         // validasi file image
@@ -58,6 +71,7 @@ const ItemInput: FC = () => {
             const res = await createProduct(form).unwrap();
             showAlert(res.message);
             setForm({
+                outlet_id: '',
                 nama: '',
                 hpp: 0,
                 harga: 0,
@@ -82,12 +96,12 @@ const ItemInput: FC = () => {
     return (
         <>
             {isLoadingCreateProd && <LoadingPage /> }
-            <div className="flex justify-center">
+            <div className="lg:flex lg:justify-center p-5 md:p-0">
                 <div className="flex flex-col gap-5">
-                    <div className="grid grid-flow-col grid-rows-2 gap-5">
+                    <div className="flex flex-col lg:grid lg:grid-flow-col lg:grid-rows-2 gap-5">
                         <input 
                             type="text" 
-                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="input w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             placeholder="Nama Produk" 
                             value={form.nama}
@@ -98,7 +112,7 @@ const ItemInput: FC = () => {
                         />
                         <input 
                             type="number" 
-                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="input w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             placeholder="HPP"
                             value={form.hpp === 0 ? '' : form.hpp}
@@ -108,7 +122,7 @@ const ItemInput: FC = () => {
                             }))} 
                         />
                         <select  
-                            className="select w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="select w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             value={form.kategori === 0 ? '' : form.kategori}
                             onChange={(e) => setForm(prev => ({
@@ -117,14 +131,14 @@ const ItemInput: FC = () => {
                             }))}
                         >
                             <option value="" disabled={true}>- Pilih kategori -</option>
-                            <option value={1}>Food</option>
-                            <option value={2}>Beverages</option>
+                            <option value={1}>Makanan</option>
+                            <option value={2}>Minuman</option>
                             <option value={3}>Snack</option>
-                            <option value={4}>Coffee</option>
+                            <option value={4}>Kopi</option>
                         </select>
                         <input 
                             type="number" 
-                            className="input w-[400px] bg-base-200 border-base-300 rounded" 
+                            className="input w-full lg:w-[400px] bg-base-200 border-base-300 rounded" 
                             required 
                             placeholder="Harga"
                             value={form.harga === 0 ? '' : form.harga}
@@ -139,7 +153,7 @@ const ItemInput: FC = () => {
                             <input 
                                 type="file" 
                                 ref={fileInputRef}
-                                className="file-input w-[400px] border-base-300 rounded"
+                                className="file-input w-full lg:w-[400px] border-base-300 rounded"
                                 onChange={handleFileChange} 
                             />
                             <label className="label">Max size 2MB</label>

@@ -2,14 +2,34 @@ import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState } from "react";
 import { MdPrint } from "react-icons/md";
 import { LINK_CUST } from "../components/BASE_URL";
+import { usePostMeQuery } from "../services/apiAuth";
 
 type Props = {};
 
 export default function QRTableGenerator(_props: Props) {
+  const width = window.innerWidth;
+  let sizeCheck = 200;
+  if (width < 768) {
+    sizeCheck = 100;
+  } else if (width >= 768 && width < 1024) {
+    sizeCheck = 100;
+  } else {
+    sizeCheck = 200;
+  }
+  
+  let colCheck = 3;
+  if (width < 768) {
+    colCheck = 2;
+  } else {
+    colCheck = 3;
+  }
+
+  const { data: MeData } = usePostMeQuery();
+  const user = MeData?.user;
   const [start, setStart] = useState<number>(1);
   const [end, setEnd] = useState<number>(3);
-  const [cols, setCols] = useState<number>(3);
-  const [size, setSize] = useState<number>(200);
+  const [cols, setCols] = useState<number>(colCheck);
+  const [size, setSize] = useState<number>(sizeCheck);
   const [fgColor, setFgColor] = useState("#000000");
   const [bgColor, setBgColor] = useState("#ffffff");
 
@@ -84,45 +104,45 @@ export default function QRTableGenerator(_props: Props) {
   }
 
   return (
-    <div className="p-5 min-h-screen bg-base-100 border border-base-300 rounded">
+    <div className="m-5 md:p-5 min-h-screen bg-base-100 md:border md:border-base-300 rounded">
       {/* Bagian kontrol, tidak ikut tercetak */}
       <div className=" mx-auto no-print">
         <div className="bg-base-100 p-5 rounded border border-base-300 mb-6">
-          <div className="flex flex-wrap gap-4 items-end">
+          <div className="flex flex-col md:flex-row lg:flex-wrap gap-4 md:items-end">
             <div>
-              <label className="block text-sm text-gray-500">Start</label>
+              <label className="lg:block text-sm text-gray-500">Start</label>
               <input
                 type="number"
                 value={start}
                 onChange={(e) => setStart(Number(e.target.value))}
-                className="input w-24 mt-1 bg-base-200 border-base-300 rounded"
+                className="input w-full lg:w-24 mt-1 bg-base-200 border-base-300 rounded"
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-500">End</label>
+              <label className="lg:block text-sm text-gray-500">End</label>
               <input
                 type="number"
                 value={end}
                 onChange={(e) => setEnd(Number(e.target.value))}
-                className="input w-24 mt-1 bg-base-200 border-base-300 rounded"
+                className="input w-full lg:w-24 mt-1 bg-base-200 border-base-300 rounded"
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-500">Columns</label>
+              <label className="lg:block text-sm text-gray-500">Columns</label>
               <input
                 type="number"
                 value={cols}
                 onChange={(e) => setCols(Number(e.target.value))}
-                className="input w-24 mt-1 bg-base-200 border-base-300 rounded"
+                className="input w-full lg:w-24 mt-1 bg-base-200 border-base-300 rounded"
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-500">Size (px)</label>
+              <label className="lg:block text-sm text-gray-500">Size (px)</label>
               <input
                 type="number"
                 value={size}
                 onChange={(e) => setSize(Number(e.target.value))}
-                className="input w-28 mt-1 bg-base-200 border-base-300 rounded"
+                className="input w-full lg:w-24 mt-1 bg-base-200 border-base-300 rounded"
               />
             </div>
 
@@ -155,7 +175,7 @@ export default function QRTableGenerator(_props: Props) {
                 <div className="print:hidden">
                   <QRCodeSVG
                     id={`qrcode-svg-${n}`}
-                    value={`${LINK_CUST}/scan/${btoa(`meja-${n}`)}`}
+                    value={`${LINK_CUST}/scan/${btoa(`meja-${n}-${user?.outlet_id}`)}`}
                     size={size}
                     level="M"
                     includeMargin={false}
@@ -168,7 +188,7 @@ export default function QRTableGenerator(_props: Props) {
                 <div className="hidden print:block">
                   <QRCodeSVG
                     id={`qrcode-svg-print-${n}`}
-                    value={`${LINK_CUST}/scan/${btoa(`meja-${n}`)}`}
+                    value={`${LINK_CUST}/scan/${btoa(`meja-${n}-${user?.outlet_id}`)}`}
                     size={size}
                     level="M"
                     includeMargin={false}

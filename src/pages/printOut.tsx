@@ -1,28 +1,35 @@
 import type { FC } from "react";
 import { useGetOrderByIdQuery, useGetOrderCompleteQuery } from "../services/apiOrder";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { MdPrint } from "react-icons/md";
 import moment from 'moment';
 import "moment/dist/locale/id";
 import { useGetCompanyProfileQuery } from "../services/apiProfile";
 import { BASE_URL } from "../components/BASE_URL";
+import { usePostMeQuery } from "../services/apiAuth";
 
 moment.locale("id");
 
 const PrintOut: FC = () => {
     const { id = "" } = useParams();
+    const navigate = useNavigate();
+    const { data: MeData } = usePostMeQuery();
+    const user = MeData?.user;
     const { data: getOrder } = useGetOrderCompleteQuery({
         year: 0,
         month: 0,
-        process: "all"
+        process: "all",
+        outlet_id: user?.outlet_id
     }, {
         refetchOnFocus: true,
         refetchOnReconnect: true,
     });
     const order = getOrder?.find(o => o.order_id === id);
-    console.log(order)
+    // console.log(order)
     const { data: getOrderDetail = [] } = useGetOrderByIdQuery(id);
-    const { data: getCompanyProfile } = useGetCompanyProfileQuery();
+    const { data: getCompanyProfile } = useGetCompanyProfileQuery({
+        outlet_id: user?.outlet_id
+    });
     const subtotal = getOrderDetail.reduce(
         (sum, item) => sum + item.qty * item.harga,
         0
@@ -40,8 +47,8 @@ const PrintOut: FC = () => {
 
     return (
         <>
-            <div className="flex flex-col gap-3 justify-center items-center">
-                <div className="border border-base-300 rounded p-5 w-[450px]">
+            <div className="flex flex-col gap-3 justify-center items-center p-5 md:p-0">
+                <div className="border border-base-300 rounded p-5 w-full lg:w-[450px]">
                     <div id="receipt">
                         <div className="flex justify-between">
                             <p className="text-xs font-semibold">
@@ -110,14 +117,23 @@ const PrintOut: FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-end w-[450px]">
-                    <button 
-                        className="btn bg-gradient-to-r from-green-600 to-green-500 text-white border-none rounded"
-                        onClick={handlePrint}
-                    >
-                        <MdPrint size={20} />
-                        Print
-                    </button>
+                <div className="flex justify-end w-full lg:w-[450px]">
+                    <div className="flex gap-3">
+                        <button 
+                            type="submit" 
+                            className="btn bg-gray-400 text-white rounded border-none"
+                            onClick={() => navigate(-1)}
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            className="btn bg-gradient-to-r from-green-600 to-green-500 text-white border-none rounded"
+                            onClick={handlePrint}
+                        >
+                            <MdPrint size={20} />
+                            Print
+                        </button>
+                    </div>    
                 </div>
             </div>
             <style>{`

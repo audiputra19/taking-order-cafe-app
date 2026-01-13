@@ -1,5 +1,5 @@
 import { useEffect, useState, type FC } from "react";
-import { LuClipboardList, LuClipboardX, LuNotebookPen, LuUserPlus } from "react-icons/lu";
+import { LuClipboardList, LuClipboardX, LuNotebookPen } from "react-icons/lu";
 import { RiEdit2Line } from "react-icons/ri";
 import { TbSquarePercentage } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,8 +9,6 @@ import Discontinue from "../subPages/input/discontinue";
 import ItemEdit from "../subPages/input/itemEdit";
 import ItemInput from "../subPages/input/itemInput";
 import { ItemList } from "../subPages/input/itemList";
-import UserInput from "../subPages/input/userInput";
-import { UserList } from "../subPages/input/userList";
 import VoucherEdit from "../subPages/input/voucherEdit";
 import VoucherInput from "../subPages/input/voucherInput";
 import { VoucherList } from "../subPages/input/voucherList";
@@ -29,8 +27,6 @@ const Input: FC = () => {
     useEffect(() => {
         if(state === "item-edit") {
             setActiveTab("list-item");
-        } else if(state === "user-edit") {
-            setActiveTab("list-user");
         } else if(state === "voucher-edit") {
             setActiveTab("list-voucher");
         }
@@ -39,7 +35,7 @@ const Input: FC = () => {
     return (
         <>
             {isLoadingMe && <LoadingPage />}
-            <div className="tabs tabs-lift">
+            <div className="tabs tabs-lift p-5">
                 <label 
                     className="tab"
                     onClick={() => {
@@ -100,36 +96,6 @@ const Input: FC = () => {
 
                 {user?.hak_akses === 1 && (
                     <>
-                        <label 
-                            className="tab"
-                            onClick={() => {
-                                setActiveTab("input-user");
-                                navigate('/input');
-                            }}
-                        >
-                            <input type="radio" name="my_tabs_4" checked={activeTab === "input-user"} readOnly />
-                            <LuUserPlus size={18} className="mr-2"/>
-                            User Input
-                        </label>
-                        <div className="tab-content bg-base-100 border-base-300 p-5">
-                            <UserInput />
-                        </div>
-
-                        <label 
-                            className="tab"
-                            onClick={() => {
-                                setActiveTab("list-user");
-                                navigate('/input');
-                            }}
-                        >
-                            <input type="radio" name="my_tabs_4" checked={activeTab === "list-user"} readOnly />
-                            <LuClipboardList size={18} className="mr-2"/>
-                            User List
-                        </label>
-                        <div className="tab-content bg-base-100 border-base-300 p-5">
-                            <UserList />
-                        </div>
-
                         <label 
                             className="tab"
                             onClick={() => {

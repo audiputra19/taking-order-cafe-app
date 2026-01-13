@@ -8,28 +8,33 @@ import LineChart, { type RangeType } from "../../components/charts/lineChart";
 import { getCategoryName } from "../../components/getCategoryName";
 import { getRangeLineChart } from "../../components/getRangeLineChart";
 import { useAverageOrderValueMutation, useRevenueByCategoryMutation, useRevenueByProductMutation, useRevenueTrendQuery, useTopPaymentMethodMutation, useTotalProfitMutation, useTotalRevenueMutation } from "../../services/apiDashboard";
+import { usePostMeQuery } from "../../services/apiAuth";
 
 interface RevenueAnalyticsProps {
     selectPeriode: number;
 }
 
 export const RevenueAnalytics: FC<RevenueAnalyticsProps> = ({ selectPeriode }) => {
+    const { data: MeData } = usePostMeQuery();
+        const user = MeData?.user;
     const [totalRevenue, { data: getTotalRevenue, isLoading: isLoadingTotalRevenue }] = useTotalRevenueMutation();
     const [totalProfit, { data: getTotalProfit }] = useTotalProfitMutation();
     const [averageOrderValue, { data: getAverageOrderValue }] = useAverageOrderValueMutation();
     const [revenueByProduct, { data: getRevenueByProduct }] = useRevenueByProductMutation();
     const [revenueByCategory, { data: getRevenueByCategory }] = useRevenueByCategoryMutation();
-    const { data: getRevenueTrend } = useRevenueTrendQuery();
+    const { data: getRevenueTrend } = useRevenueTrendQuery({
+        outlet_id: user?.outlet_id
+    });
     const [topPaymentMethod, { data: getTopPaymentMethod }] = useTopPaymentMethodMutation();
 
     useEffect(() => {
         if(selectPeriode) {
-            totalRevenue({ periode: selectPeriode })
-            totalProfit({ periode: selectPeriode })
-            averageOrderValue({ periode: selectPeriode })
-            revenueByProduct({ periode: selectPeriode })
-            revenueByCategory({ periode: selectPeriode })
-            topPaymentMethod({ periode: selectPeriode })
+            totalRevenue({ outlet_id: user?.outlet_id, periode: selectPeriode })
+            totalProfit({ outlet_id: user?.outlet_id, periode: selectPeriode })
+            averageOrderValue({ outlet_id: user?.outlet_id, periode: selectPeriode })
+            revenueByProduct({ outlet_id: user?.outlet_id, periode: selectPeriode })
+            revenueByCategory({ outlet_id: user?.outlet_id, periode: selectPeriode })
+            topPaymentMethod({ outlet_id: user?.outlet_id, periode: selectPeriode })
         }
     }, [selectPeriode])
 
@@ -81,7 +86,7 @@ export const RevenueAnalytics: FC<RevenueAnalyticsProps> = ({ selectPeriode }) =
             {/* Part 1 */}
 
             <div className="mt-5">
-                <div className="grid grid-cols-3 gap-5">
+                <div className="flex flex-col sm:grid sm:grid-cols-3 gap-5">
                     <div className="border border-base-300 bg-base-100 p-5 rounded">
                         <div className="flex justify-between items-center">
                             <p className="text-lg text-gray-500 font-semibold">Total Revenue</p>
@@ -93,7 +98,7 @@ export const RevenueAnalytics: FC<RevenueAnalyticsProps> = ({ selectPeriode }) =
                             <p className="text-2xl font-bold flex gap-1 items-center">
                                 Rp. 
                                 {isLoadingTotalRevenue ? (
-                                    <div className="skeleton h-5 w-32"></div>
+                                    <span className="skeleton h-5 w-32"></span>
                                 ) : (
                                     <span>{getTotalRevenue?.current.total_revenue.toLocaleString("id-ID") ?? 0}</span>
                                 )}
@@ -126,7 +131,7 @@ export const RevenueAnalytics: FC<RevenueAnalyticsProps> = ({ selectPeriode }) =
                             <p className="text-2xl font-bold flex gap-1 items-center">
                                 Rp. 
                                 {isLoadingTotalRevenue ? (
-                                    <div className="skeleton h-5 w-32"></div>
+                                    <span className="skeleton h-5 w-32"></span>
                                 ) : (
                                     <span>{getTotalProfit?.current.total_profit.toLocaleString("id-ID") ?? 0}</span>
                                 )}
@@ -159,7 +164,7 @@ export const RevenueAnalytics: FC<RevenueAnalyticsProps> = ({ selectPeriode }) =
                             <p className="text-2xl font-bold flex gap-1 items-center">
                                 Rp. 
                                 {isLoadingTotalRevenue ? (
-                                    <div className="skeleton h-5 w-32"></div>
+                                    <span className="skeleton h-5 w-32"></span>
                                 ) : (
                                     <span>{getAverageOrderValue?.current.total.toLocaleString("id-ID") ?? 0}</span>
                                 )}
@@ -187,7 +192,7 @@ export const RevenueAnalytics: FC<RevenueAnalyticsProps> = ({ selectPeriode }) =
             {/* Part 2 */}
 
             <div className="mt-5">
-                <div className="grid grid-cols-2 gap-5">
+                <div className="flex flex-col sm:grid sm:grid-cols-2 gap-5">
                     <div className="border border-base-300 bg-base-100 p-5 rounded">
                         <div>
                             <p className="text-lg text-gray-500 font-semibold">Revenue by Product</p>
@@ -231,7 +236,7 @@ export const RevenueAnalytics: FC<RevenueAnalyticsProps> = ({ selectPeriode }) =
             {/* Part 3 */}
 
             <div className="mt-5">
-                <div className="grid grid-cols-3 gap-5">
+                <div className="flex flex-col sm:grid sm:grid-cols-3 gap-5">
                     <div className="border border-base-300 bg-base-100 p-5 rounded">
                         <div>
                             <p className="text-lg text-gray-500 font-semibold">Top Payment Method</p>

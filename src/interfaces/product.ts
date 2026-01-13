@@ -1,5 +1,6 @@
 export interface GetProductResponse {
     id: string;
+    outlet_id: string;
     nama: string;
     hpp: number;
     harga: number;
@@ -11,6 +12,7 @@ export interface GetProductResponse {
 }
 
 export interface CreateProductRequest {
+    outlet_id: string;
     nama: string;
     hpp: number;
     harga: number;

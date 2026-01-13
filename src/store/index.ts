@@ -11,6 +11,8 @@ import { apiUser } from "../services/apiUser";
 import { apiDashboard } from "../services/apiDashboard";
 import { apiProfile } from "../services/apiProfile";
 import { apiVoucher } from "../services/apiVoucher";
+import { apiWilayah } from "../services/apiWilayah";
+import { apiOutlet } from "../services/apiOutlet";
 
 const persistConfig = {
     key: 'root',
@@ -28,6 +30,8 @@ const rootReducer = combineReducers({
     [apiDashboard.reducerPath]: apiDashboard.reducer,
     [apiProfile.reducerPath]: apiProfile.reducer,
     [apiVoucher.reducerPath]: apiVoucher.reducer,
+    [apiWilayah.reducerPath]: apiWilayah.reducer,
+    [apiOutlet.reducerPath]: apiOutlet.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -45,6 +49,8 @@ export const store = configureStore({
             apiDashboard.middleware,
             apiProfile.middleware,
             apiVoucher.middleware,
+            apiWilayah.middleware,
+            apiOutlet.middleware,
         )
 });
 

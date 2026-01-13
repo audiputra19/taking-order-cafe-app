@@ -9,11 +9,11 @@ const Dashboard: FC = () => {
     const filter = selectFilter === 1 ? "Sales Performance" : "Revenue Analytics"
 
     return (
-        <div className="w-full">
+        <div className="w-full p-5">
             {/* Filter */}
-            <div className="flex justify-between gap-3">
-                <div className="flex items-center gap-5">
-                    <div className="dropdown dropdown-start max-w-48">
+            <div className="flex gap-3">
+                <div className="flex flex-col w-full md:flex-row md:items-center gap-3">
+                    <div className="dropdown dropdown-start bg-base-200 md:max-w-48">
                         <div 
                             tabIndex={0} 
                             className="flex items-center gap-3 text-sm font-semibold border border-base-300 px-3 py-2 rounded cursor-pointer"
@@ -42,7 +42,7 @@ const Dashboard: FC = () => {
                             </li>
                         </ul>
                     </div>
-                    <div className="dropdown dropdown-start max-w-42">
+                    <div className="dropdown dropdown-start bg-base-200 md:max-w-42">
                         <div 
                             tabIndex={1} 
                             className="flex items-center gap-3 text-sm font-semibold border border-base-300 px-3 py-2 rounded cursor-pointer"
